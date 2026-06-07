@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理員後台 — SmartJournal AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--gold:#C9A84C;--dark:#0A0C0F;--dark2:#111418;--dark3:#181D24;--dark4:#1E252F;--border:rgba(201,168,76,0.2);--border-dim:rgba(255,255,255,0.06);--green:#00D68F;--red:#FF4D6A;--text:#E8E3D8;--muted:#7A8494;}
+body{background:var(--dark);color:var(--text);font-family:'Noto Sans TC',sans-serif;padding:40px 24px;}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;}
+.logo{font-family:'Space Mono',monospace;font-size:15px;color:var(--gold);}
+.logo span{color:var(--text);opacity:0.5;}
+.badge{background:rgba(255,77,106,0.15);color:var(--red);font-family:'Space Mono',monospace;font-size:10px;padding:4px 12px;border-radius:100px;letter-spacing:0.1em;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:900px;}
+.card{background:var(--dark2);border:0.5px solid var(--border-dim);border-radius:12px;overflow:hidden;}
+.card-header{padding:16px 20px;border-bottom:0.5px solid var(--border-dim);}
+.card-title{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:0.1em;}
+.card-body{padding:20px;}
+.fl{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:0.06em;display:block;margin-bottom:6px;}
+.fi{width:100%;background:var(--dark3);border:0.5px solid var(--border-dim);color:var(--text);padding:10px 14px;border-radius:6px;font-size:13px;outline:none;transition:border-color 0.2s;margin-bottom:12px;font-family:'Noto Sans TC',sans-serif;}
+.fi:focus{border-color:var(--gold);}
+.fi::placeholder{color:var(--muted);}
+textarea.fi{resize:vertical;min-height:120px;}
+.btn{background:var(--gold);color:var(--dark);border:none;padding:10px 24px;border-radius:6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;transition:opacity 0.2s;}
+.btn:hover{opacity:0.9;}
+.btn:disabled{opacity:0.5;cursor:not-allowed;}
+.msg{font-size:12px;margin-top:10px;font-family:'Space Mono',monospace;}
+.user-table{width:100%;border-collapse:collapse;}
+.user-table th{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.08em;text-align:left;padding:8px 12px;border-bottom:0.5px solid var(--border-dim);}
+.user-table td{padding:10px 12px;font-size:12px;border-bottom:0.5px solid rgba(255,255,255,0.03);}
+.plan-badge{font-family:'Space Mono',monospace;font-size:10px;padding:2px 8px;border-radius:100px;}
+.plan-free{background:rgba(122,132,148,0.15);color:var(--muted);}
+.plan-pro{background:rgba(201,168,76,0.15);color:var(--gold);}
+.plan-whale{background:rgba(0,214,143,0.15);color:var(--green);}
+.stat-row{display:flex;gap:16px;margin-bottom:20px;}
+.stat{background:var(--dark3);border:0.5px solid var(--border-dim);border-radius:8px;padding:14px 18px;flex:1;text-align:center;}
+.stat-num{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--gold);}
+.stat-label{font-size:11px;color:var(--muted);margin-top:4px;}
+.span-full{grid-column:1/-1;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Smart<span>Journal</span> AI</div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="badge">ADMIN</span>
+    <a href="dashboard.html" style="font-size:12px;color:var(--muted);text-decoration:none;">← 返回儀表板</a>
+  </div>
+</div>
+
+<div class="grid">
+
+  <!-- 統計 -->
+  <div class="card span-full">
+    <div class="card-header"><span class="card-title">用戶統計</span></div>
+    <div class="card-body">
+      <div class="stat-row" id="statsRow">
+        <div class="stat"><div class="stat-num" id="totalUsers">—</div><div class="stat-label">總用戶數</div></div>
+        <div class="stat"><div class="stat-num" id="freeUsers">—</div><div class="stat-label">Free 用戶</div></div>
+        <div class="stat"><div class="stat-num" id="proUsers">—</div><div class="stat-label">Pro 用戶</div></div>
+        <div class="stat"><div class="stat-num" id="whaleUsers">—</div><div class="stat-label">Whale 用戶</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 廣播發信 -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">系統廣播郵件</span></div>
+    <div class="card-body">
+      <label class="fl">主旨</label>
+      <input class="fi" id="broadcastSubject" placeholder="SmartJournal AI — 最新消息">
+      <label class="fl">內容（支援 HTML）</label>
+      <textarea class="fi" id="broadcastBody" placeholder="親愛的用戶，&#10;&#10;感謝您使用 SmartJournal AI..."></textarea>
+      <button class="btn" id="broadcastBtn" onclick="sendBroadcast()">發送給所有用戶</button>
+      <div class="msg" id="broadcastMsg"></div>
+    </div>
+  </div>
+
+  <!-- 用戶列表 -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">用戶列表</span></div>
+    <div style="overflow-x:auto;">
+      <table class="user-table" id="userTable">
+        <thead><tr><th>ID</th><th>EMAIL</th><th>方案</th><th>註冊時間</th></tr></thead>
+        <tbody id="userTableBody"><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">載入中...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = 'https://web-production-6cef6.up.railway.app/api/v1';
+const token = localStorage.getItem('sj_token');
+
+if (!token) window.location.href = 'index.html';
+
+async function apiFetch(path, opts = {}) {
+  return fetch(`${API}${path}`, {
+    ...opts,
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...(opts.headers || {}) }
+  });
+}
+
+async function loadUsers() {
+  try {
+    const res = await apiFetch('/admin/users');
+    if (res.status === 403) {
+      document.body.innerHTML = '<div style="text-align:center;padding:100px;color:var(--red);font-family:Space Mono,monospace;">⛔ 權限不足，只有管理員可以訪問此頁面</div>';
+      return;
+    }
+    const users = await res.json();
+
+    // 統計
+    document.getElementById('totalUsers').textContent = users.length;
+    document.getElementById('freeUsers').textContent = users.filter(u => u.plan === 'free').length;
+    document.getElementById('proUsers').textContent = users.filter(u => u.plan === 'pro').length;
+    document.getElementById('whaleUsers').textContent = users.filter(u => u.plan === 'whale').length;
+
+    // 表格
+    const planClass = { free: 'plan-free', pro: 'plan-pro', whale: 'plan-whale' };
+    document.getElementById('userTableBody').innerHTML = users.map(u => `
+      <tr>
+        <td style="font-family:'Space Mono',monospace;color:var(--muted);">${u.id}</td>
+        <td>${u.email}</td>
+        <td><span class="plan-badge ${planClass[u.plan] || 'plan-free'}">${(u.plan || 'free').toUpperCase()}</span></td>
+        <td style="color:var(--muted);font-size:11px;">${new Date(u.created_at).toLocaleDateString('zh-TW')}</td>
+      </tr>
+    `).join('');
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+async function sendBroadcast() {
+  const subject = document.getElementById('broadcastSubject').value.trim();
+  const body = document.getElementById('broadcastBody').value.trim();
+  const msgEl = document.getElementById('broadcastMsg');
+  const btn = document.getElementById('broadcastBtn');
+
+  if (!subject || !body) { msgEl.innerHTML = '<span style="color:var(--red)">請填寫主旨和內容</span>'; return; }
+
+  if (!confirm(`確定要發送給所有用戶嗎？`)) return;
+
+  btn.disabled = true; btn.textContent = '發送中...';
+  try {
+    const res = await apiFetch('/admin/broadcast', {
+      method: 'POST',
+      body: JSON.stringify({ subject, body })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail);
+    msgEl.innerHTML = `<span style="color:var(--green)">✅ 成功發送 ${data.sent} 封，失敗 ${data.failed} 封</span>`;
+  } catch(e) {
+    msgEl.innerHTML = `<span style="color:var(--red)">錯誤：${e.message}</span>`;
+  }
+  btn.disabled = false; btn.textContent = '發送給所有用戶';
+}
+
+loadUsers();
+</script>
+</body>
+</html>
