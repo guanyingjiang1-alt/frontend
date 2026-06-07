@@ -212,7 +212,6 @@ body{background:var(--dark);color:var(--text);font-family:'Noto Sans TC',sans-se
     <a class="nav-item" onclick="showPage('analytics')"><span class="icon">🔬</span>深度分析</a>
     <a class="nav-item" onclick="showPage('ai')"><span class="icon">🤖</span>AI 診斷</a>
     <div class="nav-section" style="margin-top:8px;">設定</div>
-    <a class="nav-item" href="pricing.html"><span class="icon">⚡</span>升級方案</a>
     <a class="nav-item" onclick="showPage('settings')"><span class="icon">⚙️</span>帳號設定</a>
   </nav>
   <div class="sidebar-footer">
@@ -357,30 +356,42 @@ body{background:var(--dark);color:var(--text);font-family:'Noto Sans TC',sans-se
     </div>
 
     <!-- ═══ PAGE: SETTINGS ═══ -->
-    async function syncExchange(exchange) {
-  const key = document.getElementById(`${exchange}Key`).value.trim();
-  const secret = document.getElementById(`${exchange}Secret`).value.trim();
-  const resultEl = document.getElementById(`${exchange}Result`);
-  const btn = document.getElementById(`${exchange}SyncBtn`);
-  if (!key || !secret) { resultEl.innerHTML = '<span style="color:var(--red)">請填寫 API Key 和 Secret Key</span>'; return; }
-  btn.disabled = true; btn.textContent = '同步中...';
-  resultEl.innerHTML = '<span style="color:var(--muted)">連線中...</span>';
-  try {
-    const res = await apiFetch(`/exchange/sync/${exchange}`, { method:'POST', body: JSON.stringify({ api_key: key, secret_key: secret }) });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || '同步失敗');
-    if (data.errors && data.errors.length) {
-      resultEl.innerHTML = `<span style="color:var(--gold)">匯入 ${data.imported} 筆，部分錯誤：${data.errors.join(', ')}</span>`;
-    } else {
-      resultEl.innerHTML = `<span style="color:var(--green)">✓ 成功匯入 ${data.imported} 筆交易</span>`;
-    }
-    if (data.imported > 0) await loadData();
-  } catch(e) {
-    resultEl.innerHTML = `<span style="color:var(--red)">錯誤：${e.message}</span>`;
-  }
-  btn.disabled = false;
-  btn.textContent = `同步 ${exchange === 'binance' ? 'Binance' : 'Bybit'} 交易`;
-}
+    <div class="page" id="page-settings">
+      <div style="max-width:560px;display:flex;flex-direction:column;gap:20px;">
+        <div class="card">
+          <div class="card-header"><span class="card-title">帳號資訊</span></div>
+          <div class="card-body">
+            <div class="fg"><label class="fl">顯示名稱</label><input class="fi" id="settingName" placeholder="交易員暱稱"></div>
+            <div class="fg"><label class="fl">EMAIL</label><input class="fi" id="settingEmail" readonly style="opacity:0.6;"></div>
+            <div class="fg"><label class="fl">方案</label><input class="fi" id="settingPlan" readonly style="opacity:0.6;color:var(--gold);"></div>
+            <button class="btn-submit" style="width:auto;padding:10px 28px;" onclick="saveSettings()">儲存變更</button>
+            <a href="pricing.html" style="display:inline-block;margin-top:8px;font-size:12px;color:var(--gold);text-decoration:none;">⚡ 升級方案 →</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">BINANCE API 同步</span><span class="card-sub">只需唯讀權限</span></div>
+          <div class="card-body">
+            <div class="fg"><label class="fl">API KEY</label><input class="fi" id="binanceKey" placeholder="貼上 Binance API Key"></div>
+            <div class="fg"><label class="fl">SECRET KEY</label><input class="fi" type="password" id="binanceSecret" placeholder="貼上 Binance Secret Key"></div>
+            <button class="btn-submit" style="width:auto;padding:10px 24px;" id="binanceSyncBtn" onclick="syncExchange('binance')">同步 Binance 交易</button>
+            <div id="binanceResult" style="font-size:12px;margin-top:10px;font-family:'Space Mono',monospace;"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">BYBIT API 同步</span><span class="card-sub">只需唯讀權限</span></div>
+          <div class="card-body">
+            <div class="fg"><label class="fl">API KEY</label><input class="fi" id="bybitKey" placeholder="貼上 Bybit API Key"></div>
+            <div class="fg"><label class="fl">SECRET KEY</label><input class="fi" type="password" id="bybitSecret" placeholder="貼上 Bybit Secret Key"></div>
+            <button class="btn-submit" style="width:auto;padding:10px 24px;" id="bybitSyncBtn" onclick="syncExchange('bybit')">同步 Bybit 交易</button>
+            <div id="bybitResult" style="font-size:12px;margin-top:10px;font-family:'Space Mono',monospace;"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">後端連線狀態</span></div>
+          <div class="card-body" id="backendStatus" style="font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);">檢測中...</div>
+        </div>
+      </div>
+    </div>
 
   </div><!-- /content -->
 </main>
@@ -436,7 +447,7 @@ body{background:var(--dark);color:var(--text);font-family:'Noto Sans TC',sans-se
 </div>
 
 <script>
-const API = 'https://web-production-6cef6.up.railway.app/api/v1';
+const API = 'http://localhost:8000/api/v1';
 let token = localStorage.getItem('sj_token');
 let user  = JSON.parse(localStorage.getItem('sj_user') || 'null');
 let allTrades = [];
@@ -981,6 +992,31 @@ function renderSettings() {
 
 async function saveSettings() {
   alert('已儲存（後端 PATCH /auth/me 待實作）');
+}
+
+async function syncExchange(exchange) {
+  const key = document.getElementById(`${exchange}Key`).value.trim();
+  const secret = document.getElementById(`${exchange}Secret`).value.trim();
+  const resultEl = document.getElementById(`${exchange}Result`);
+  const btn = document.getElementById(`${exchange}SyncBtn`);
+  if (!key || !secret) { resultEl.innerHTML = '<span style="color:var(--red)">請填寫 API Key 和 Secret Key</span>'; return; }
+  btn.disabled = true; btn.textContent = '同步中...';
+  resultEl.innerHTML = '<span style="color:var(--muted)">連線中...</span>';
+  try {
+    const res = await apiFetch(`/exchange/sync/${exchange}`, { method:'POST', body: JSON.stringify({ api_key: key, secret_key: secret }) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || '同步失敗');
+    if (data.errors && data.errors.length) {
+      resultEl.innerHTML = `<span style="color:var(--gold)">匯入 ${data.imported} 筆，部分錯誤：${data.errors.join(', ')}</span>`;
+    } else {
+      resultEl.innerHTML = `<span style="color:var(--green)">✓ 成功匯入 ${data.imported} 筆交易</span>`;
+    }
+    if (data.imported > 0) await loadData();
+  } catch(e) {
+    resultEl.innerHTML = `<span style="color:var(--red)">錯誤：${e.message}</span>`;
+  }
+  btn.disabled = false;
+  btn.textContent = `同步 ${exchange === 'binance' ? 'Binance' : 'Bybit'} 交易`;
 }
 
 async function checkBackendStatus() {
