@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — SmartJournal AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#C9A84C;--gold-dim:#8A6F2E;--gold-light:#F0D690;
+  --dark:#0A0C0F;--dark2:#111418;--dark3:#181D24;--dark4:#1E252F;--dark5:#242C38;
+  --border:rgba(201,168,76,0.2);--border-dim:rgba(255,255,255,0.06);
+  --green:#00D68F;--red:#FF4D6A;--blue:#3B82F6;--purple:#A78BFA;
+  --text:#E8E3D8;--muted:#7A8494;
+}
+body{background:var(--dark);color:var(--text);font-family:'Noto Sans TC',sans-serif;font-weight:300;display:flex;min-height:100vh;overflow-x:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:220px;flex-shrink:0;background:var(--dark2);border-right:0.5px solid var(--border-dim);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:0.5px solid var(--border-dim);}
+.logo-text{font-family:'Space Mono',monospace;font-size:14px;color:var(--gold);letter-spacing:0.06em;}
+.logo-text span{color:var(--text);opacity:0.45;}
+.sidebar-user{padding:16px 20px;border-bottom:0.5px solid var(--border-dim);display:flex;align-items:center;gap:10px;}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:var(--dark4);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--gold);flex-shrink:0;}
+.user-name{font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.user-plan{font-size:10px;color:var(--gold);font-family:'Space Mono',monospace;letter-spacing:0.06em;}
+.sidebar-nav{padding:12px 0;flex:1;}
+.nav-section{padding:8px 20px 4px;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.14em;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:var(--muted);cursor:pointer;transition:all 0.2s;border-left:2px solid transparent;text-decoration:none;}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,0.03);}
+.nav-item.active{color:var(--text);border-left-color:var(--gold);background:rgba(201,168,76,0.06);}
+.nav-item .icon{font-size:14px;width:18px;text-align:center;}
+.sidebar-footer{padding:16px 20px;border-top:0.5px solid var(--border-dim);}
+.logout-btn{width:100%;background:none;border:0.5px solid var(--border-dim);color:var(--muted);padding:8px;border-radius:6px;font-size:12px;cursor:pointer;transition:all 0.2s;font-family:'Noto Sans TC',sans-serif;}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{padding:16px 32px;border-bottom:0.5px solid var(--border-dim);display:flex;align-items:center;justify-content:space-between;background:rgba(10,12,15,0.8);backdrop-filter:blur(8px);position:sticky;top:0;z-index:40;}
+.page-title{font-size:16px;font-weight:500;}
+.page-subtitle{font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;}
+.topbar-actions{display:flex;align-items:center;gap:12px;}
+.period-selector{display:flex;gap:0;background:var(--dark3);border:0.5px solid var(--border-dim);border-radius:6px;overflow:hidden;}
+.period-btn{background:none;border:none;color:var(--muted);font-size:12px;padding:6px 14px;cursor:pointer;font-family:'Space Mono',monospace;transition:all 0.2s;}
+.period-btn.active{background:var(--dark5);color:var(--text);}
+.btn-add{background:var(--gold);color:var(--dark);border:none;padding:8px 18px;border-radius:6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;transition:opacity 0.2s;}
+.btn-add:hover{opacity:0.85;}
+
+/* CONTENT */
+.content{padding:28px 32px;flex:1;}
+
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;}
+
+/* STAT CARDS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--dark2);border:0.5px solid var(--border-dim);border-radius:12px;padding:20px 22px;transition:border-color 0.3s;position:relative;overflow:hidden;}
+.stat-card:hover{border-color:var(--border);}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.stat-card.green-accent::after{background:var(--green);}
+.stat-card.gold-accent::after{background:var(--gold);}
+.stat-card.red-accent::after{background:var(--red);}
+.stat-card.blue-accent::after{background:var(--blue);}
+.stat-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-bottom:10px;}
+.stat-val{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;line-height:1;}
+.stat-val.green{color:var(--green);}
+.stat-val.gold{color:var(--gold);}
+.stat-val.red{color:var(--red);}
+.stat-change{font-size:11px;color:var(--muted);margin-top:6px;display:flex;align-items:center;gap:4px;}
+.stat-change .up{color:var(--green);}
+.stat-change .dn{color:var(--red);}
+
+/* GRID LAYOUTS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;}
+.grid-7-5{display:grid;grid-template-columns:7fr 5fr;gap:16px;margin-bottom:24px;}
+.grid-5-7{display:grid;grid-template-columns:5fr 7fr;gap:16px;margin-bottom:24px;}
+.span-full{grid-column:1/-1;}
+
+/* CARD */
+.card{background:var(--dark2);border:0.5px solid var(--border-dim);border-radius:12px;overflow:hidden;}
+.card-header{padding:16px 20px;border-bottom:0.5px solid var(--border-dim);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:0.1em;}
+.card-sub{font-size:11px;color:var(--muted);}
+.card-body{padding:20px;}
+
+/* CHART CONTAINERS */
+.chart-wrap{position:relative;padding:16px 20px 20px;}
+.chart-wrap canvas{max-height:220px;}
+
+/* TRADE TABLE */
+.trade-table{width:100%;border-collapse:collapse;}
+.trade-table th{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.08em;text-align:left;padding:10px 16px;border-bottom:0.5px solid var(--border-dim);}
+.trade-table td{padding:12px 16px;font-size:13px;border-bottom:0.5px solid rgba(255,255,255,0.03);}
+.trade-table tr:last-child td{border-bottom:none;}
+.trade-table tr:hover td{background:rgba(255,255,255,0.02);}
+.tag-pill{font-size:10px;padding:2px 8px;border-radius:100px;font-family:'Space Mono',monospace;white-space:nowrap;}
+.tag-fvg{background:rgba(201,168,76,0.15);color:var(--gold);}
+.tag-ob{background:rgba(59,130,246,0.15);color:#60A5FA;}
+.tag-mss{background:rgba(167,139,250,0.15);color:var(--purple);}
+.tag-fomo{background:rgba(255,77,106,0.15);color:var(--red);}
+.tag-bos{background:rgba(0,214,143,0.12);color:var(--green);}
+.side-badge{font-family:'Space Mono',monospace;font-size:10px;padding:2px 8px;border-radius:3px;}
+.side-long{background:rgba(0,214,143,0.1);color:var(--green);}
+.side-short{background:rgba(255,77,106,0.1);color:var(--red);}
+
+/* PROGRESS BAR */
+.prog-row{margin-bottom:14px;}
+.prog-header{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;}
+.prog-bar-bg{background:var(--dark4);border-radius:2px;height:6px;}
+.prog-bar-fill{height:100%;border-radius:2px;transition:width 1s ease;}
+
+/* HEATMAP */
+.heatmap-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:16px 20px 20px;}
+.heat-cell{aspect-ratio:1;border-radius:3px;cursor:pointer;transition:transform 0.15s;position:relative;}
+.heat-cell:hover{transform:scale(1.15);z-index:1;}
+.heat-label-row{display:flex;gap:3px;padding:0 20px;margin-bottom:6px;}
+.heat-day-label{flex:1;text-align:center;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);}
+.month-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);padding:0 20px 6px;letter-spacing:0.1em;}
+
+/* SESSION CHART */
+.session-list{display:flex;flex-direction:column;gap:10px;padding:16px 20px 20px;}
+.session-row{display:flex;align-items:center;gap:12px;}
+.session-name{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);width:60px;flex-shrink:0;}
+.session-bar-wrap{flex:1;background:var(--dark4);border-radius:3px;height:8px;overflow:hidden;}
+.session-bar{height:100%;border-radius:3px;}
+.session-stat{font-family:'Space Mono',monospace;font-size:11px;width:48px;text-align:right;flex-shrink:0;}
+
+/* STREAK */
+.streak-display{display:flex;align-items:center;justify-content:space-around;padding:20px;}
+.streak-item{text-align:center;}
+.streak-num{font-family:'Space Mono',monospace;font-size:36px;font-weight:700;}
+.streak-num.win{color:var(--green);}
+.streak-num.loss{color:var(--red);}
+.streak-label{font-size:11px;color:var(--muted);margin-top:4px;}
+.streak-dots{display:flex;gap:4px;justify-content:center;margin-top:8px;}
+.streak-dot{width:10px;height:10px;border-radius:50%;}
+
+/* AI INSIGHT */
+.insight-box{background:var(--dark3);border:0.5px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:12px;}
+.insight-tag{font-family:'Space Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:0.12em;margin-bottom:8px;}
+.insight-text{font-size:13px;line-height:1.75;color:var(--text);}
+.insight-text strong{color:var(--gold);}
+.insight-text .neg{color:var(--red);}
+.insight-text .pos{color:var(--green);}
+
+/* TRADE FORM */
+.form-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.form-overlay.open{opacity:1;pointer-events:all;}
+.trade-form{background:var(--dark2);border:0.5px solid var(--border);border-radius:16px;padding:32px;width:100%;max-width:520px;transform:translateY(12px);transition:transform 0.3s;max-height:90vh;overflow-y:auto;}
+.form-overlay.open .trade-form{transform:translateY(0);}
+.form-title{font-family:'Space Mono',monospace;font-size:14px;color:var(--gold);margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fg{margin-bottom:14px;}
+.fl{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:0.06em;display:block;margin-bottom:6px;}
+.fi{width:100%;background:var(--dark3);border:0.5px solid var(--border-dim);color:var(--text);padding:10px 14px;border-radius:6px;font-family:'Noto Sans TC',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--gold);}
+.fi option{background:var(--dark3);}
+.tag-selector{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.tag-opt{background:var(--dark4);border:0.5px solid var(--border-dim);border-radius:100px;padding:4px 12px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+.tag-opt.selected{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.1);}
+.form-actions{display:flex;gap:12px;margin-top:24px;}
+.btn-cancel{flex:1;background:none;border:0.5px solid var(--border-dim);color:var(--muted);padding:12px;border-radius:6px;cursor:pointer;font-size:13px;transition:all 0.2s;}
+.btn-cancel:hover{border-color:rgba(255,255,255,0.2);color:var(--text);}
+.btn-submit{flex:2;background:var(--gold);color:var(--dark);border:none;padding:12px;border-radius:6px;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;cursor:pointer;transition:opacity 0.2s;}
+.btn-submit:hover{opacity:0.9;}
+.btn-submit:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:48px 20px;color:var(--muted);}
+.empty-icon{font-size:36px;margin-bottom:12px;}
+.empty-title{font-size:15px;color:var(--text);margin-bottom:8px;}
+.empty-desc{font-size:13px;line-height:1.7;}
+
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:var(--dark);z-index:999;display:flex;align-items:center;justify-content:center;transition:opacity 0.4s;}
+.loading-overlay.hidden{opacity:0;pointer-events:none;}
+.loader{font-family:'Space Mono',monospace;font-size:14px;color:var(--gold);letter-spacing:0.1em;}
+.loader::after{content:'...';animation:dots 1.5s infinite;}
+@keyframes dots{0%{content:''}33%{content:'.'}66%{content:'..'}100%{content:'...'}}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-dim);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loader">載入中</div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-text">Smart<span>Journal</span> AI</div></div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">?</div>
+    <div>
+      <div class="user-name" id="sidebarName">載入中</div>
+      <div class="user-plan" id="sidebarPlan">FREE</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">主要</div>
+    <a class="nav-item active" onclick="showPage('overview')"><span class="icon">📊</span>總覽</a>
+    <a class="nav-item" onclick="showPage('trades')"><span class="icon">📋</span>交易紀錄</a>
+    <a class="nav-item" onclick="showPage('analytics')"><span class="icon">🔬</span>深度分析</a>
+    <a class="nav-item" onclick="showPage('ai')"><span class="icon">🤖</span>AI 診斷</a>
+    <div class="nav-section" style="margin-top:8px;">設定</div>
+    <a class="nav-item" onclick="showPage('settings')"><span class="icon">⚙️</span>帳號設定</a>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="handleLogout()">登出</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title" id="topbarTitle">總覽儀表板</div>
+      <div class="page-subtitle" id="topbarSub">歡迎回來，查看你的交易表現</div>
+    </div>
+    <div class="topbar-actions">
+      <div class="period-selector">
+        <button class="period-btn active" onclick="setPeriod('7d',this)">7D</button>
+        <button class="period-btn" onclick="setPeriod('30d',this)">30D</button>
+        <button class="period-btn" onclick="setPeriod('90d',this)">90D</button>
+        <button class="period-btn" onclick="setPeriod('all',this)">全部</button>
+      </div>
+      <button class="btn-add" onclick="openTradeForm()">+ 新增交易</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ PAGE: OVERVIEW ═══ -->
+    <div class="page active" id="page-overview">
+      <div class="stats-row" id="statsRow">
+        <div class="stat-card green-accent"><div class="stat-label">總勝率</div><div class="stat-val green" id="statWinRate">—</div><div class="stat-change"><span class="up" id="statWinRateChg"></span></div></div>
+        <div class="stat-card gold-accent"><div class="stat-label">期望值 EV</div><div class="stat-val gold" id="statEV">—</div><div class="stat-change">每筆平均 USDT</div></div>
+        <div class="stat-card blue-accent"><div class="stat-label">本期盈虧</div><div class="stat-val" id="statPnl">—</div><div class="stat-change" id="statPnlSub">USDT</div></div>
+        <div class="stat-card"><div class="stat-label">總交易筆數</div><div class="stat-val" id="statTotal">—</div><div class="stat-change" id="statTotalSub"></div></div>
+      </div>
+
+      <div class="grid-7-5">
+        <div class="card">
+          <div class="card-header"><span class="card-title">資產曲線</span><span class="card-sub" id="equityCurveLabel">累計損益</span></div>
+          <div class="chart-wrap"><canvas id="equityChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">策略勝率分佈</span></div>
+          <div class="card-body" id="tagBreakdown" style="padding:16px 20px;"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">月曆熱力圖</span><span class="card-sub">每日損益</span></div>
+          <div class="month-label" id="heatmapMonthLabel"></div>
+          <div class="heat-label-row">
+            <div class="heat-day-label">日</div><div class="heat-day-label">一</div>
+            <div class="heat-day-label">二</div><div class="heat-day-label">三</div>
+            <div class="heat-day-label">四</div><div class="heat-day-label">五</div>
+            <div class="heat-day-label">六</div>
+          </div>
+          <div class="heatmap-grid" id="heatmapGrid"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">連勝 / 連敗紀錄</span></div>
+          <div class="streak-display" id="streakDisplay"></div>
+          <div class="card-header" style="border-top:0.5px solid var(--border-dim);border-bottom:none;padding-top:12px;"><span class="card-title">最近 20 筆走勢</span></div>
+          <div style="padding:10px 20px 16px;display:flex;gap:3px;align-items:flex-end;" id="recentDots"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-header"><span class="card-title">最近交易</span><a onclick="showPage('trades')" style="font-size:12px;color:var(--gold);cursor:pointer;">查看全部 →</a></div>
+        <div id="recentTradesTable"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE: TRADES ═══ -->
+    <div class="page" id="page-trades">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+        <input class="fi" style="max-width:180px;" id="filterSymbol" placeholder="幣對篩選（BTC/USDT）" oninput="filterTrades()">
+        <select class="fi" style="max-width:150px;" id="filterTag" onchange="filterTrades()">
+          <option value="">所有標籤</option>
+          <option>FVG-Fill</option><option>OB-Mitigated</option><option>MSS</option>
+          <option>BOS</option><option>FOMO</option><option>Revenge</option>
+        </select>
+        <select class="fi" style="max-width:130px;" id="filterStatus" onchange="filterTrades()">
+          <option value="">所有狀態</option>
+          <option value="closed">已平倉</option><option value="open">持倉中</option>
+        </select>
+        <span style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;" id="filterCount"></span>
+      </div>
+      <div class="card">
+        <div id="fullTradesTable"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE: ANALYTICS ═══ -->
+    <div class="page" id="page-analytics">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">時段表現分析</span><span class="card-sub">亞洲 / 倫敦 / 紐約</span></div>
+          <div class="session-list" id="sessionAnalysis"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">每日時段分佈</span><span class="card-sub">哪個時段你最常交易</span></div>
+          <div class="chart-wrap"><canvas id="sessionRadar" style="max-height:200px;"></canvas></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">幣對表現排行</span></div>
+          <div class="chart-wrap"><canvas id="symbolBar"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">盈虧分佈直方圖</span><span class="card-sub">你的 PnL 長什麼樣</span></div>
+          <div class="chart-wrap"><canvas id="pnlHistogram"></canvas></div>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-header"><span class="card-title">最大回撤 MDD</span></div>
+          <div class="chart-wrap"><canvas id="mddChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">多空比例</span></div>
+          <div class="chart-wrap" style="display:flex;align-items:center;justify-content:center;min-height:180px;"><canvas id="longShortPie" style="max-height:160px;max-width:160px;"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">持倉時長分佈</span></div>
+          <div class="chart-wrap"><canvas id="holdingTime"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE: AI DIAGNOSE ═══ -->
+    <div class="page" id="page-ai">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+        <div style="flex:1;">
+          <div style="font-size:18px;font-weight:500;margin-bottom:4px;">AI 策略診斷報告</div>
+          <div style="font-size:13px;color:var(--muted);">根據你的歷史交易數據，自動生成可行動的洞見</div>
+        </div>
+        <button class="btn-add" onclick="runAIDiagnosis()" id="aiRunBtn">重新分析</button>
+      </div>
+      <div id="aiInsights"></div>
+    </div>
+
+    <!-- ═══ PAGE: SETTINGS ═══ -->
+    <div class="page" id="page-settings">
+      <div style="max-width:520px;">
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><span class="card-title">帳號資訊</span></div>
+          <div class="card-body">
+            <div class="fg"><label class="fl">顯示名稱</label><input class="fi" id="settingName" placeholder="交易員暱稱"></div>
+            <div class="fg"><label class="fl">EMAIL</label><input class="fi" id="settingEmail" readonly style="opacity:0.6;"></div>
+            <div class="fg"><label class="fl">方案</label><input class="fi" id="settingPlan" readonly style="opacity:0.6;color:var(--gold);"></div>
+            <button class="btn-submit" style="width:auto;padding:10px 28px;" onclick="saveSettings()">儲存變更</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">後端連線狀態</span></div>
+          <div class="card-body" id="backendStatus" style="font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);">檢測中...</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- TRADE FORM MODAL -->
+<div class="form-overlay" id="tradeFormOverlay" onclick="handleFormOverlay(event)">
+  <div class="trade-form">
+    <div class="form-title">
+      <span>新增交易紀錄</span>
+      <button onclick="closeTradeForm()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="fg"><label class="fl">幣對 / 交易對</label><input class="fi" id="tf_symbol" placeholder="BTC/USDT"></div>
+      <div class="fg"><label class="fl">方向</label>
+        <select class="fi" id="tf_side"><option value="long">LONG ↑</option><option value="short">SHORT ↓</option></select>
+      </div>
+      <div class="fg"><label class="fl">入場價</label><input class="fi" type="number" id="tf_entry" placeholder="60000"></div>
+      <div class="fg"><label class="fl">出場價（選填）</label><input class="fi" type="number" id="tf_exit" placeholder="62000"></div>
+      <div class="fg"><label class="fl">數量</label><input class="fi" type="number" id="tf_qty" placeholder="0.1"></div>
+      <div class="fg"><label class="fl">槓桿倍數</label><input class="fi" type="number" id="tf_lev" value="1" min="1"></div>
+      <div class="fg"><label class="fl">開倉時間</label><input class="fi" type="datetime-local" id="tf_opened"></div>
+      <div class="fg"><label class="fl">平倉時間</label><input class="fi" type="datetime-local" id="tf_closed"></div>
+    </div>
+    <div class="fg"><label class="fl">時段</label>
+      <select class="fi" id="tf_session">
+        <option value="">— 選擇時段 —</option>
+        <option value="asia">亞洲盤（03:00-09:00）</option>
+        <option value="london">倫敦盤（15:00-20:00）</option>
+        <option value="ny">紐約盤（20:00-02:00）</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label class="fl">策略標籤</label>
+      <div class="tag-selector" id="tagSelector">
+        <span class="tag-opt" onclick="toggleTag(this,'FVG-Fill')">#FVG-Fill</span>
+        <span class="tag-opt" onclick="toggleTag(this,'OB-Mitigated')">#OB-Mitigated</span>
+        <span class="tag-opt" onclick="toggleTag(this,'MSS')">#MSS</span>
+        <span class="tag-opt" onclick="toggleTag(this,'BOS')">#BOS</span>
+        <span class="tag-opt" onclick="toggleTag(this,'ChoCh')">#ChoCh</span>
+        <span class="tag-opt" onclick="toggleTag(this,'FOMO')">#FOMO</span>
+        <span class="tag-opt" onclick="toggleTag(this,'Revenge')">#Revenge</span>
+        <span class="tag-opt" onclick="toggleTag(this,'Scaled-In')">#Scaled-In</span>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">入場原因</label><textarea class="fi" id="tf_setup" rows="2" placeholder="描述你為什麼進場..."></textarea></div>
+    <div class="fg"><label class="fl">錯誤筆記</label><textarea class="fi" id="tf_mistake" rows="2" placeholder="這筆交易有沒有犯錯？"></textarea></div>
+    <div id="tfError" style="font-size:12px;color:var(--red);margin-bottom:8px;display:none;"></div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeTradeForm()">取消</button>
+      <button class="btn-submit" id="tfSubmitBtn" onclick="submitTrade()">儲存交易</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:8000/api/v1';
+let token = localStorage.getItem('sj_token');
+let user  = JSON.parse(localStorage.getItem('sj_user') || 'null');
+let allTrades = [];
+let stats = null;
+let currentPeriod = '30d';
+let selectedTags = [];
+
+// ── AUTH GUARD ──────────────────────────────────────────────────────────────
+if (!token) { window.location.href = 'index.html'; }
+
+async function apiFetch(path, opts = {}) {
+  const res = await fetch(`${API}${path}`, {
+    ...opts,
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...(opts.headers||{}) }
+  });
+  if (res.status === 401) { handleLogout(); throw new Error('Unauthorized'); }
+  return res;
+}
+
+function handleLogout() {
+  localStorage.removeItem('sj_token');
+  localStorage.removeItem('sj_user');
+  window.location.href = 'index.html';
+}
+
+// ── INIT ────────────────────────────────────────────────────────────────────
+async function init() {
+  // Fill sidebar
+  if (user) {
+    const initials = (user.display_name || user.email).substring(0,2).toUpperCase();
+    document.getElementById('sidebarAvatar').textContent = initials;
+    document.getElementById('sidebarName').textContent = user.display_name || user.email;
+    document.getElementById('sidebarPlan').textContent = (user.plan || 'FREE').toUpperCase();
+  }
+
+  try {
+    // Fetch user info fresh
+    const meRes = await apiFetch('/auth/me');
+    if (meRes.ok) {
+      user = await meRes.json();
+      localStorage.setItem('sj_user', JSON.stringify(user));
+    }
+
+    await loadData();
+  } catch(e) {
+    console.error(e);
+  }
+
+  document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+async function loadData() {
+  // Load trades
+  const tradeRes = await apiFetch('/trades/?limit=200');
+  if (tradeRes.ok) {
+    allTrades = await tradeRes.json();
+  } else {
+    allTrades = getMockTrades();
+  }
+
+  // Load stats
+  const statRes = await apiFetch('/trades/stats');
+  if (statRes.ok) {
+    stats = await statRes.json();
+  } else {
+    stats = getMockStats();
+  }
+
+  renderAll();
+}
+
+function renderAll() {
+  renderStats();
+  renderEquityCurve();
+  renderTagBreakdown();
+  renderHeatmap();
+  renderStreak();
+  renderRecentTrades();
+  renderFullTrades();
+  renderSessionAnalysis();
+  renderCharts();
+  renderAI();
+  renderSettings();
+  checkBackendStatus();
+}
+
+// ── STATS CARDS ──────────────────────────────────────────────────────────────
+function renderStats() {
+  const s = stats || getMockStats();
+  document.getElementById('statWinRate').textContent = `${s.win_rate}%`;
+  document.getElementById('statEV').textContent = s.avg_pnl >= 0 ? `+$${s.avg_pnl.toFixed(2)}` : `-$${Math.abs(s.avg_pnl).toFixed(2)}`;
+  const pnl = s.total_pnl;
+  const pnlEl = document.getElementById('statPnl');
+  pnlEl.textContent = (pnl >= 0 ? '+' : '') + `$${pnl.toFixed(2)}`;
+  pnlEl.className = 'stat-val ' + (pnl >= 0 ? 'green' : 'red');
+  document.getElementById('statTotal').textContent = s.total_trades;
+  document.getElementById('statTotalSub').innerHTML = `<span>已平倉交易</span>`;
+}
+
+// ── EQUITY CURVE ─────────────────────────────────────────────────────────────
+let equityChartInst = null;
+function renderEquityCurve() {
+  const closed = allTrades.filter(t => t.status === 'closed' && t.pnl != null)
+    .sort((a,b) => new Date(a.opened_at) - new Date(b.opened_at));
+
+  let cumulative = 0;
+  const labels = [], data = [];
+  closed.forEach((t,i) => {
+    cumulative += t.pnl;
+    labels.push(t.symbol.split('/')[0]);
+    data.push(+cumulative.toFixed(2));
+  });
+
+  if (!labels.length) { labels.push('開始'); data.push(0); }
+
+  const ctx = document.getElementById('equityChart').getContext('2d');
+  if (equityChartInst) equityChartInst.destroy();
+  const gradient = ctx.createLinearGradient(0, 0, 0, 220);
+  const lastVal = data[data.length-1] || 0;
+  const color = lastVal >= 0 ? '0,214,143' : '255,77,106';
+  gradient.addColorStop(0, `rgba(${color},0.2)`);
+  gradient.addColorStop(1, `rgba(${color},0)`);
+
+  equityChartInst = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets: [{
+      data, borderColor: lastVal >= 0 ? '#00D68F' : '#FF4D6A',
+      backgroundColor: gradient, borderWidth: 2,
+      pointRadius: closed.length > 30 ? 0 : 3,
+      pointBackgroundColor: lastVal >= 0 ? '#00D68F' : '#FF4D6A',
+      tension: 0.3, fill: true
+    }]},
+    options: { responsive: true, plugins: { legend: {display:false}, tooltip: { callbacks: { label: ctx => `$${ctx.raw}` } } },
+      scales: { x: { ticks: {color:'#7A8494',font:{size:10}}, grid: {color:'rgba(255,255,255,0.04)'} },
+        y: { ticks: {color:'#7A8494',font:{size:10}, callback: v => `$${v}`}, grid: {color:'rgba(255,255,255,0.04)'} } } }
+  });
+}
+
+// ── TAG BREAKDOWN ─────────────────────────────────────────────────────────────
+function renderTagBreakdown() {
+  const s = stats || getMockStats();
+  const el = document.getElementById('tagBreakdown');
+  if (!s.tag_breakdown || !Object.keys(s.tag_breakdown).length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🏷️</div><div class="empty-title">還沒有標籤資料</div></div>';
+    return;
+  }
+  const sorted = Object.entries(s.tag_breakdown).sort((a,b) => b[1].win_rate - a[1].win_rate);
+  el.innerHTML = sorted.map(([tag, data]) => {
+    const wr = data.win_rate;
+    const color = wr >= 60 ? 'var(--green)' : wr >= 45 ? 'var(--gold)' : 'var(--red)';
+    return `<div class="prog-row">
+      <div class="prog-header"><span style="font-size:12px;">#${tag}</span><span style="font-family:'Space Mono',monospace;font-size:12px;color:${color}">${wr}%</span></div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${wr}%;background:${color};"></div></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:3px;">${data.count} 筆交易</div>
+    </div>`;
+  }).join('');
+}
+
+// ── HEATMAP ───────────────────────────────────────────────────────────────────
+function renderHeatmap() {
+  const now = new Date();
+  const year = now.getFullYear(), month = now.getMonth();
+  document.getElementById('heatmapMonthLabel').textContent = `${year} 年 ${month+1} 月`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+
+  // Build daily pnl map
+  const dayMap = {};
+  allTrades.filter(t => t.pnl != null && t.closed_at).forEach(t => {
+    const d = new Date(t.closed_at);
+    if (d.getFullYear() === year && d.getMonth() === month) {
+      const key = d.getDate();
+      dayMap[key] = (dayMap[key] || 0) + t.pnl;
+    }
+  });
+
+  const grid = document.getElementById('heatmapGrid');
+  grid.innerHTML = '';
+
+  // Empty cells
+  for (let i = 0; i < firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'heat-cell';
+    el.style.background = 'transparent';
+    grid.appendChild(el);
+  }
+
+  const maxAbs = Math.max(...Object.values(dayMap).map(Math.abs), 1);
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement('div');
+    el.className = 'heat-cell';
+    const pnl = dayMap[d];
+    if (pnl != null) {
+      const intensity = Math.min(Math.abs(pnl) / maxAbs, 1);
+      const alpha = 0.15 + intensity * 0.7;
+      el.style.background = pnl >= 0 ? `rgba(0,214,143,${alpha})` : `rgba(255,77,106,${alpha})`;
+      el.title = `${month+1}/${d}：${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`;
+    } else {
+      el.style.background = 'var(--dark4)';
+    }
+    if (d === now.getDate()) el.style.outline = '1.5px solid var(--gold)';
+    grid.appendChild(el);
+  }
+}
+
+// ── STREAK ────────────────────────────────────────────────────────────────────
+function renderStreak() {
+  const closed = allTrades.filter(t => t.status === 'closed' && t.pnl != null)
+    .sort((a,b) => new Date(b.opened_at) - new Date(a.opened_at));
+
+  if (!closed.length) {
+    document.getElementById('streakDisplay').innerHTML = '<div class="empty-state" style="padding:24px"><div class="empty-desc">尚無交易資料</div></div>';
+    return;
+  }
+
+  let curWin = 0, curLoss = 0, maxWin = 0, maxLoss = 0;
+  let inWin = true;
+  closed.forEach((t, i) => {
+    const w = t.pnl > 0;
+    if (i === 0) { inWin = w; }
+    if (w === inWin) { inWin ? curWin++ : curLoss++; }
+    else { inWin = !inWin; inWin ? curWin++ : curLoss++; }
+  });
+
+  // Calculate max streaks
+  let streak = 1;
+  for (let i = 1; i < closed.length; i++) {
+    if ((closed[i].pnl > 0) === (closed[i-1].pnl > 0)) streak++;
+    else {
+      if (closed[i-1].pnl > 0) maxWin = Math.max(maxWin, streak);
+      else maxLoss = Math.max(maxLoss, streak);
+      streak = 1;
+    }
+  }
+
+  const currentWinStreak = closed[0].pnl > 0 ? curWin : 0;
+  const currentLossStreak = closed[0].pnl <= 0 ? curLoss : 0;
+
+  document.getElementById('streakDisplay').innerHTML = `
+    <div class="streak-item">
+      <div class="streak-num win">${maxWin}</div>
+      <div class="streak-label">最長連勝</div>
+    </div>
+    <div style="width:1px;height:60px;background:var(--border-dim);"></div>
+    <div class="streak-item">
+      <div class="streak-num ${currentWinStreak > 0 ? 'win' : 'loss'}">${currentWinStreak > 0 ? currentWinStreak : currentLossStreak}</div>
+      <div class="streak-label">${currentWinStreak > 0 ? '目前連勝' : '目前連敗'}</div>
+    </div>
+    <div style="width:1px;height:60px;background:var(--border-dim);"></div>
+    <div class="streak-item">
+      <div class="streak-num loss">${maxLoss}</div>
+      <div class="streak-label">最長連敗</div>
+    </div>
+  `;
+
+  // Recent dots
+  const dots = document.getElementById('recentDots');
+  dots.innerHTML = closed.slice(0,20).reverse().map(t => {
+    const pct = Math.min(Math.abs(t.pnl) / 200 * 100, 100);
+    return `<div style="flex:1;background:${t.pnl>0?'var(--green)':'var(--red)'};border-radius:2px;height:${8+pct*0.5}px;opacity:0.8;" title="${t.symbol}: ${t.pnl>0?'+':''}$${t.pnl.toFixed(2)}"></div>`;
+  }).join('');
+}
+
+// ── TRADE TABLES ──────────────────────────────────────────────────────────────
+function renderTradeTable(trades, containerId, limit) {
+  const el = document.getElementById(containerId);
+  const show = limit ? trades.slice(0, limit) : trades;
+
+  if (!show.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">還沒有交易紀錄</div><div class="empty-desc">點右上角「+ 新增交易」開始記錄</div></div>';
+    return;
+  }
+
+  const tagClass = {'FVG-Fill':'tag-fvg','OB-Mitigated':'tag-ob','MSS':'tag-mss','BOS':'tag-bos','FOMO':'tag-fomo','Revenge':'tag-fomo'};
+
+  el.innerHTML = `<table class="trade-table">
+    <thead><tr>
+      <th>幣對</th><th>方向</th><th>入場</th><th>出場</th><th>標籤</th><th>時段</th><th>損益</th><th>報酬率</th>
+    </tr></thead>
+    <tbody>${show.map(t => {
+      const tags = t.tags ? t.tags.split(',').map(tag => `<span class="tag-pill ${tagClass[tag.trim()]||'tag-ob'}">#${tag.trim()}</span>`).join(' ') : '—';
+      const pnl = t.pnl != null ? `<span style="color:${t.pnl>=0?'var(--green)':'var(--red)'};font-family:'Space Mono',monospace;font-size:12px;">${t.pnl>=0?'+':''}$${t.pnl.toFixed(2)}</span>` : '—';
+      const pct = t.pnl_pct != null ? `<span style="color:${t.pnl_pct>=0?'var(--green)':'var(--red)'};font-size:12px;">${t.pnl_pct>=0?'+':''}${t.pnl_pct.toFixed(2)}%</span>` : '—';
+      const session = {asia:'亞洲',london:'倫敦',ny:'紐約'}[t.session] || '—';
+      return `<tr>
+        <td style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;">${t.symbol}</td>
+        <td><span class="side-badge ${t.side==='long'?'side-long':'side-short'}">${t.side==='long'?'LONG':'SHORT'}</span></td>
+        <td style="font-family:'Space Mono',monospace;font-size:12px;">${(+t.entry_price).toLocaleString()}</td>
+        <td style="font-family:'Space Mono',monospace;font-size:12px;">${t.exit_price ? (+t.exit_price).toLocaleString() : '<span style="color:var(--gold)">持倉中</span>'}</td>
+        <td>${tags}</td>
+        <td style="font-size:12px;color:var(--muted);">${session}</td>
+        <td>${pnl}</td>
+        <td>${pct}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+function renderRecentTrades() { renderTradeTable(allTrades, 'recentTradesTable', 8); }
+function renderFullTrades() {
+  document.getElementById('filterCount').textContent = `共 ${allTrades.length} 筆`;
+  renderTradeTable(allTrades, 'fullTradesTable', null);
+}
+
+function filterTrades() {
+  const sym = document.getElementById('filterSymbol').value.trim().toUpperCase();
+  const tag = document.getElementById('filterTag').value;
+  const status = document.getElementById('filterStatus').value;
+  let filtered = allTrades;
+  if (sym) filtered = filtered.filter(t => t.symbol.includes(sym));
+  if (tag) filtered = filtered.filter(t => t.tags && t.tags.includes(tag));
+  if (status) filtered = filtered.filter(t => t.status === status);
+  document.getElementById('filterCount').textContent = `${filtered.length} / ${allTrades.length} 筆`;
+  renderTradeTable(filtered, 'fullTradesTable', null);
+}
+
+// ── SESSION ANALYSIS ──────────────────────────────────────────────────────────
+function renderSessionAnalysis() {
+  const sessions = ['asia','london','ny'];
+  const sessionNames = {asia:'亞洲盤',london:'倫敦盤',ny:'紐約盤'};
+  const sessionColors = {asia:'var(--purple)',london:'var(--blue)',ny:'var(--gold)'};
+
+  const data = {};
+  sessions.forEach(s => {
+    const trades = allTrades.filter(t => t.session === s && t.pnl != null);
+    const wins = trades.filter(t => t.pnl > 0);
+    data[s] = { count: trades.length, wr: trades.length ? Math.round(wins.length/trades.length*100) : 0, pnl: trades.reduce((a,t) => a+t.pnl, 0) };
+  });
+
+  const el = document.getElementById('sessionAnalysis');
+  const maxWr = Math.max(...Object.values(data).map(d => d.wr), 1);
+
+  el.innerHTML = sessions.map(s => {
+    const d = data[s];
+    return `<div class="session-row">
+      <div class="session-name">${sessionNames[s]}</div>
+      <div class="session-bar-wrap"><div class="session-bar" style="width:${d.wr}%;background:${sessionColors[s]};"></div></div>
+      <div class="session-stat" style="color:${d.wr>=55?'var(--green)':d.wr>=40?'var(--gold)':'var(--red)'};">${d.wr}%</div>
+    </div>
+    <div style="font-size:10px;color:var(--muted);padding:0 0 10px 72px;font-family:'Space Mono',monospace;">${d.count} 筆 · ${d.pnl>=0?'+':''}$${d.pnl.toFixed(0)}</div>`;
+  }).join('');
+}
+
+// ── CHARTS ────────────────────────────────────────────────────────────────────
+let chartInstances = {};
+function destroyChart(id) { if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; } }
+
+function renderCharts() {
+  renderSessionRadar();
+  renderSymbolBar();
+  renderPnlHistogram();
+  renderMddChart();
+  renderLongShortPie();
+  renderHoldingTimeChart();
+}
+
+function renderSessionRadar() {
+  destroyChart('sessionRadar');
+  const sessions = ['asia','london','ny'];
+  const labels = ['亞洲盤','倫敦盤','紐約盤','週一','週二','週三'];
+  const countData = sessions.map(s => allTrades.filter(t => t.session === s).length);
+  const days = [1,2,3,4,5].map(d => allTrades.filter(t => { const dt = new Date(t.opened_at); return dt.getDay()===d; }).length);
+  const ctx = document.getElementById('sessionRadar').getContext('2d');
+  chartInstances['sessionRadar'] = new Chart(ctx, {
+    type: 'radar',
+    data: { labels: ['亞洲盤','倫敦盤','紐約盤','週一','週三','週五'],
+      datasets: [{data: [...countData, days[0], days[2], days[4]], borderColor:'var(--gold)', backgroundColor:'rgba(201,168,76,0.1)', borderWidth:1.5, pointBackgroundColor:'var(--gold)'}]},
+    options: { responsive:true, plugins:{legend:{display:false}}, scales:{r:{ticks:{color:'var(--muted)',font:{size:9}}, grid:{color:'rgba(255,255,255,0.06)'}, pointLabels:{color:'var(--muted)',font:{size:10}}}}}
+  });
+}
+
+function renderSymbolBar() {
+  destroyChart('symbolBar');
+  const symMap = {};
+  allTrades.filter(t => t.pnl != null).forEach(t => {
+    if (!symMap[t.symbol]) symMap[t.symbol] = 0;
+    symMap[t.symbol] += t.pnl;
+  });
+  const sorted = Object.entries(symMap).sort((a,b) => b[1]-a[1]).slice(0,8);
+  const ctx = document.getElementById('symbolBar').getContext('2d');
+  chartInstances['symbolBar'] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: sorted.map(([s]) => s.split('/')[0]),
+      datasets: [{data: sorted.map(([,v]) => +v.toFixed(2)), backgroundColor: sorted.map(([,v]) => v >= 0 ? 'rgba(0,214,143,0.7)' : 'rgba(255,77,106,0.7)'), borderRadius:4}]},
+    options: { responsive:true, plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>`$${ctx.raw}`}}},
+      scales:{x:{ticks:{color:'var(--muted)',font:{size:10}},grid:{display:false}}, y:{ticks:{color:'var(--muted)',font:{size:10},callback:v=>`$${v}`},grid:{color:'rgba(255,255,255,0.04)'}}}}
+  });
+}
+
+function renderPnlHistogram() {
+  destroyChart('pnlHistogram');
+  const pnls = allTrades.filter(t => t.pnl != null).map(t => t.pnl);
+  if (!pnls.length) return;
+  const min = Math.floor(Math.min(...pnls)/50)*50;
+  const max = Math.ceil(Math.max(...pnls)/50)*50;
+  const buckets = []; const bucketLabels = [];
+  for (let i = min; i < max; i += 50) {
+    bucketLabels.push(`${i}`);
+    buckets.push(pnls.filter(p => p >= i && p < i+50).length);
+  }
+  const ctx = document.getElementById('pnlHistogram').getContext('2d');
+  chartInstances['pnlHistogram'] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: bucketLabels, datasets: [{data: buckets, backgroundColor: bucketLabels.map(l => +l >= 0 ? 'rgba(0,214,143,0.6)' : 'rgba(255,77,106,0.6)'), borderRadius:3}]},
+    options: { responsive:true, plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'var(--muted)',font:{size:9}},grid:{display:false}}, y:{ticks:{color:'var(--muted)',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}}}}
+  });
+}
+
+function renderMddChart() {
+  destroyChart('mddChart');
+  const closed = allTrades.filter(t => t.pnl != null).sort((a,b) => new Date(a.opened_at)-new Date(b.opened_at));
+  let cum = 0, peak = 0;
+  const drawdowns = closed.map(t => { cum += t.pnl; if(cum>peak) peak=cum; return peak>0 ? Math.min(0,cum-peak) : 0; });
+  const ctx = document.getElementById('mddChart').getContext('2d');
+  chartInstances['mddChart'] = new Chart(ctx, {
+    type: 'line',
+    data: { labels: closed.map((_,i)=>i+1), datasets: [{data: drawdowns, borderColor:'rgba(255,77,106,0.8)', backgroundColor:'rgba(255,77,106,0.1)', borderWidth:1.5, fill:true, tension:0.2, pointRadius:0}]},
+    options: { responsive:true, plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'var(--muted)',font:{size:9}},grid:{color:'rgba(255,255,255,0.04)'}}, y:{ticks:{color:'var(--muted)',font:{size:9},callback:v=>`$${v}`},grid:{color:'rgba(255,255,255,0.04)'}}}}
+  });
+}
+
+function renderLongShortPie() {
+  destroyChart('longShortPie');
+  const longs = allTrades.filter(t => t.side === 'long').length;
+  const shorts = allTrades.filter(t => t.side === 'short').length;
+  const ctx = document.getElementById('longShortPie').getContext('2d');
+  chartInstances['longShortPie'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels:['LONG','SHORT'], datasets:[{data:[longs||1, shorts||1], backgroundColor:['rgba(0,214,143,0.7)','rgba(255,77,106,0.7)'], borderColor:['#00D68F','#FF4D6A'], borderWidth:1}]},
+    options: { responsive:true, plugins:{legend:{position:'bottom', labels:{color:'var(--muted)',font:{size:10},padding:12}}}, cutout:'65%'}
+  });
+}
+
+function renderHoldingTimeChart() {
+  destroyChart('holdingTime');
+  const buckets = {'<1h':0,'1-4h':0,'4-24h':0,'1-3d':0,'>3d':0};
+  allTrades.filter(t => t.opened_at && t.closed_at).forEach(t => {
+    const hrs = (new Date(t.closed_at) - new Date(t.opened_at)) / 3600000;
+    if (hrs < 1) buckets['<1h']++;
+    else if (hrs < 4) buckets['1-4h']++;
+    else if (hrs < 24) buckets['4-24h']++;
+    else if (hrs < 72) buckets['1-3d']++;
+    else buckets['>3d']++;
+  });
+  const ctx = document.getElementById('holdingTime').getContext('2d');
+  chartInstances['holdingTime'] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: Object.keys(buckets), datasets:[{data: Object.values(buckets), backgroundColor:'rgba(201,168,76,0.6)', borderRadius:4}]},
+    options: { responsive:true, plugins:{legend:{display:false}}, indexAxis:'y',
+      scales:{x:{ticks:{color:'var(--muted)',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}}, y:{ticks:{color:'var(--muted)',font:{size:10}},grid:{display:false}}}}
+  });
+}
+
+// ── AI DIAGNOSIS ──────────────────────────────────────────────────────────────
+function renderAI() {
+  const el = document.getElementById('aiInsights');
+  const s = stats || getMockStats();
+  const closed = allTrades.filter(t => t.pnl != null);
+
+  if (!closed.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🤖</div><div class="empty-title">尚無交易資料</div><div class="empty-desc">新增幾筆交易後，AI 就能開始分析你的交易模式。</div></div>';
+    return;
+  }
+
+  const insights = [];
+
+  // Best/worst tag
+  const tags = s.tag_breakdown || {};
+  const tagEntries = Object.entries(tags);
+  if (tagEntries.length) {
+    const best = tagEntries.sort((a,b) => b[1].win_rate - a[1].win_rate)[0];
+    const worst = tagEntries[tagEntries.length-1];
+    insights.push({ type:'強項', text: `你的 <strong>#${best[0]}</strong> 策略勝率高達 <span class="pos">${best[1].win_rate}%</span>（${best[1].count} 筆），是你目前最穩定的交易模式。建議在高確信度的 ${best[0]} 信號時適當提高倉位。` });
+    if (worst[1].win_rate < 50) {
+      insights.push({ type:'風險警示', text: `<strong>#${worst[0]}</strong> 策略勝率僅 <span class="neg">${worst[1].win_rate}%</span>（${worst[1].count} 筆）。這個標籤可能反映了情緒性交易，建議在下次進場前確認是否符合你的交易計劃。` });
+    }
+  }
+
+  // Session analysis
+  const sessions = ['asia','london','ny'];
+  const sessionData = sessions.map(s => ({
+    name: s, trades: closed.filter(t => t.session === s),
+  })).filter(d => d.trades.length >= 3);
+  if (sessionData.length >= 2) {
+    sessionData.forEach(sd => { const wins = sd.trades.filter(t => t.pnl > 0); sd.wr = Math.round(wins.length/sd.trades.length*100); });
+    const bestSess = sessionData.sort((a,b) => b.wr-a.wr)[0];
+    const worstSess = sessionData[sessionData.length-1];
+    const sessNames = {asia:'亞洲盤',london:'倫敦盤',ny:'紐約盤'};
+    if (bestSess.wr - worstSess.wr > 15) {
+      insights.push({ type:'時段建議', text: `你在 <strong>${sessNames[bestSess.name]}</strong> 的勝率 <span class="pos">${bestSess.wr}%</span> 明顯優於 <strong>${sessNames[worstSess.name]}</strong> 的 <span class="neg">${worstSess.wr}%</span>。考慮將主要交易時段集中在 ${sessNames[bestSess.name]}，可能顯著提升整體表現。` });
+    }
+  }
+
+  // Risk/reward
+  const rrs = closed.filter(t => t.risk_reward != null).map(t => t.risk_reward);
+  if (rrs.length) {
+    const avgRR = rrs.reduce((a,b) => a+b, 0) / rrs.length;
+    if (avgRR < 1.5) {
+      insights.push({ type:'風控建議', text: `你的平均盈虧比 R:R 為 <span class="neg">${avgRR.toFixed(2)}</span>，低於建議的 1.5:1。嘗試將停損設得更緊，或讓獲利單跑更久，可以在不提高勝率的情況下改善整體期望值。` });
+    }
+  }
+
+  // Consecutive losses
+  const recentTen = closed.slice(0,10);
+  const recentLosses = recentTen.filter(t => t.pnl <= 0).length;
+  if (recentLosses >= 4) {
+    insights.push({ type:'心態提醒', text: `你最近 10 筆交易有 <span class="neg">${recentLosses} 筆虧損</span>。在連虧週期中，交易者容易陷入追損模式。建議暫時降低倉位，專注在高確信度的設定，等帳戶回穩後再加倉。` });
+  }
+
+  // Win rate overall
+  if (s.win_rate < 45) {
+    insights.push({ type:'整體診斷', text: `目前勝率 <span class="neg">${s.win_rate}%</span> 低於 45%，即使盈虧比良好也會對心理造成壓力。建議回歸基本面：只在最高確信度的信號才進場，先把勝率拉回 50% 以上。` });
+  } else if (s.win_rate >= 65) {
+    insights.push({ type:'整體診斷', text: `勝率 <span class="pos">${s.win_rate}%</span> 優秀！注意確保每筆交易的盈虧比不低於 1:1，避免用太緊的停利單犧牲期望值。` });
+  }
+
+  el.innerHTML = insights.length ? insights.map(ins => `
+    <div class="insight-box">
+      <div class="insight-tag">🔍 ${ins.type.toUpperCase()}</div>
+      <div class="insight-text">${ins.text}</div>
+    </div>
+  `).join('') : '<div class="insight-box"><div class="insight-tag">✅ 整體診斷</div><div class="insight-text">你的交易數據整體表現穩健，繼續保持現有的策略紀律。</div></div>';
+}
+
+function runAIDiagnosis() {
+  const btn = document.getElementById('aiRunBtn');
+  btn.textContent = '分析中...'; btn.disabled = true;
+  setTimeout(() => { renderAI(); btn.textContent = '重新分析'; btn.disabled = false; }, 800);
+}
+
+// ── SETTINGS ──────────────────────────────────────────────────────────────────
+function renderSettings() {
+  if (user) {
+    document.getElementById('settingName').value = user.display_name || '';
+    document.getElementById('settingEmail').value = user.email || '';
+    document.getElementById('settingPlan').value = (user.plan || 'free').toUpperCase();
+  }
+}
+
+async function saveSettings() {
+  alert('已儲存（後端 PATCH /auth/me 待實作）');
+}
+
+async function checkBackendStatus() {
+  try {
+    const res = await fetch(`${API.replace('/api/v1','')}/health`, {signal: AbortSignal.timeout(3000)});
+    const data = await res.json();
+    document.getElementById('backendStatus').innerHTML = `<span style="color:var(--green)">✓ 連線正常</span>  後端版本 ${data.version}  |  API: ${API}`;
+  } catch(e) {
+    document.getElementById('backendStatus').innerHTML = `<span style="color:var(--red)">✗ 無法連線</span>  請確認後端是否在 ${API} 運行<br><span style="color:var(--muted);font-size:11px;margin-top:4px;display:block;">目前顯示的是 Mock 資料</span>`;
+  }
+}
+
+// ── TRADE FORM ────────────────────────────────────────────────────────────────
+function openTradeForm() {
+  document.getElementById('tradeFormOverlay').classList.add('open');
+  document.getElementById('tf_opened').value = new Date().toISOString().slice(0,16);
+}
+function closeTradeForm() { document.getElementById('tradeFormOverlay').classList.remove('open'); }
+function handleFormOverlay(e) { if(e.target === e.currentTarget) closeTradeForm(); }
+
+function toggleTag(el, tag) {
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) selectedTags.push(tag);
+  else selectedTags = selectedTags.filter(t => t !== tag);
+}
+
+async function submitTrade() {
+  const btn = document.getElementById('tfSubmitBtn');
+  const errEl = document.getElementById('tfError');
+  errEl.style.display = 'none';
+
+  const symbol = document.getElementById('tf_symbol').value.trim();
+  const entry  = parseFloat(document.getElementById('tf_entry').value);
+  const qty    = parseFloat(document.getElementById('tf_qty').value);
+  const openedAt = document.getElementById('tf_opened').value;
+
+  if (!symbol || !entry || !qty || !openedAt) {
+    errEl.textContent = '請填寫幣對、入場價、數量和時間'; errEl.style.display = 'block'; return;
+  }
+
+  const exit = document.getElementById('tf_exit').value;
+  const closed = document.getElementById('tf_closed').value;
+
+  const body = {
+    symbol: symbol.toUpperCase(),
+    side: document.getElementById('tf_side').value,
+    entry_price: entry,
+    exit_price: exit ? parseFloat(exit) : null,
+    quantity: qty,
+    leverage: parseFloat(document.getElementById('tf_lev').value) || 1,
+    tags: selectedTags.join(',') || null,
+    session: document.getElementById('tf_session').value || null,
+    setup_note: document.getElementById('tf_setup').value || null,
+    mistake_note: document.getElementById('tf_mistake').value || null,
+    opened_at: new Date(openedAt).toISOString(),
+    closed_at: closed ? new Date(closed).toISOString() : null,
+    source: 'manual'
+  };
+
+  btn.disabled = true; btn.textContent = '儲存中...';
+  try {
+    const res = await apiFetch('/trades/', { method:'POST', body: JSON.stringify(body) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || '儲存失敗');
+    closeTradeForm();
+    await loadData();
+    // Reset form
+    selectedTags = [];
+    document.querySelectorAll('.tag-opt.selected').forEach(el => el.classList.remove('selected'));
+    ['tf_symbol','tf_entry','tf_exit','tf_qty','tf_setup','tf_mistake'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('tf_lev').value = '1';
+  } catch(e) {
+    errEl.textContent = e.message; errEl.style.display = 'block';
+  }
+  btn.disabled = false; btn.textContent = '儲存交易';
+}
+
+// ── PAGE NAVIGATION ───────────────────────────────────────────────────────────
+const pageTitles = {
+  overview: ['總覽儀表板', '歡迎回來，查看你的交易表現'],
+  trades:   ['交易紀錄', '所有交易紀錄與篩選'],
+  analytics:['深度分析', '時段、幣對、持倉時長完整分析'],
+  ai:       ['AI 策略診斷', '根據你的數據自動生成洞見'],
+  settings: ['帳號設定', '管理你的帳號與連線']
+};
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`page-${name}`).classList.add('active');
+  document.querySelector(`.nav-item[onclick="showPage('${name}')"]`).classList.add('active');
+  const [title, sub] = pageTitles[name] || ['',''];
+  document.getElementById('topbarTitle').textContent = title;
+  document.getElementById('topbarSub').textContent = sub;
+}
+
+function setPeriod(period, btn) {
+  currentPeriod = period;
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // In a real app, re-fetch with date filter. Here just re-render.
+  renderAll();
+}
+
+// ── MOCK DATA ────────────────────────────────────────────────────────────────
+function getMockTrades() {
+  const symbols = ['BTC/USDT','ETH/USDT','SOL/USDT','BNB/USDT','ADA/USDT'];
+  const tags = ['FVG-Fill','OB-Mitigated','MSS','BOS','FOMO','Revenge'];
+  const sessions = ['asia','london','ny'];
+  const trades = [];
+  let base = new Date(); base.setDate(base.getDate()-60);
+  for (let i = 0; i < 48; i++) {
+    const sym = symbols[Math.floor(Math.random()*symbols.length)];
+    const side = Math.random() > 0.5 ? 'long' : 'short';
+    const entry = sym.includes('BTC') ? 58000+Math.random()*8000 : sym.includes('ETH') ? 2800+Math.random()*600 : 100+Math.random()*200;
+    const pnlSign = Math.random() > 0.37 ? 1 : -1;
+    const pnlAmt = pnlSign * (30 + Math.random() * 220);
+    const exit = side === 'long' ? entry + pnlAmt/0.1 : entry - pnlAmt/0.1;
+    const opened = new Date(base); opened.setDate(opened.getDate() + i);
+    const closed = new Date(opened); closed.setHours(closed.getHours() + Math.floor(1+Math.random()*24));
+    trades.push({
+      id: i+1, user_id:1, symbol: sym, side, status:'closed', source:'manual',
+      entry_price: +entry.toFixed(2), exit_price: +exit.toFixed(2), quantity: 0.1, leverage: 1,
+      pnl: +pnlAmt.toFixed(2), pnl_pct: +(pnlAmt/(entry*0.1)*100).toFixed(2), risk_reward: +(1+Math.random()*2).toFixed(2),
+      tags: tags[Math.floor(Math.random()*tags.length)],
+      session: sessions[Math.floor(Math.random()*sessions.length)],
+      opened_at: opened.toISOString(), closed_at: closed.toISOString(), created_at: opened.toISOString()
+    });
+  }
+  return trades;
+}
+
+function getMockStats() {
+  const trades = getMockTrades();
+  const wins = trades.filter(t => t.pnl > 0);
+  const pnls = trades.map(t => t.pnl);
+  const tagMap = {};
+  trades.forEach(t => {
+    if (!tagMap[t.tags]) tagMap[t.tags] = {count:0,wins:0};
+    tagMap[t.tags].count++;
+    if (t.pnl > 0) tagMap[t.tags].wins++;
+  });
+  return {
+    total_trades: trades.length,
+    win_rate: Math.round(wins.length/trades.length*100),
+    total_pnl: +pnls.reduce((a,b)=>a+b,0).toFixed(2),
+    avg_pnl: +(pnls.reduce((a,b)=>a+b,0)/pnls.length).toFixed(2),
+    avg_rr: 1.6,
+    best_trade: Math.max(...pnls),
+    worst_trade: Math.min(...pnls),
+    tag_breakdown: Object.fromEntries(Object.entries(tagMap).map(([k,v]) => [k, {count:v.count, win_rate:Math.round(v.wins/v.count*100)}]))
+  };
+}
+
+// ── START ──────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
