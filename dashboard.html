@@ -311,6 +311,39 @@ textarea.fi{resize:vertical;min-height:60px;}
 @keyframes load-anim{0%{width:0%;transform:translateX(0);}50%{width:60%;}100%{width:100%;}}
  
 /* ── SCROLLBAR ── */
+ 
+/* ── PLAN GATE ── */
+.plan-gate{
+  position:absolute;inset:0;z-index:10;
+  background:linear-gradient(to bottom, rgba(8,10,13,0) 0%, rgba(8,10,13,0.92) 40%, rgba(8,10,13,0.98) 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding-bottom:32px;border-radius:var(--radius);
+  backdrop-filter:blur(2px);
+}
+.plan-gate-box{
+  background:var(--dark2);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:20px 28px;text-align:center;max-width:280px;
+}
+.plan-gate-icon{font-size:24px;margin-bottom:8px;}
+.plan-gate-title{font-size:14px;font-weight:500;margin-bottom:4px;}
+.plan-gate-sub{font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+.plan-gate-btn{
+  background:var(--gold);color:var(--dark);border:none;
+  padding:8px 20px;border-radius:var(--radius-sm);
+  font-family:'DM Mono',monospace;font-size:11px;font-weight:500;
+  cursor:pointer;transition:opacity 0.2s;
+}
+.plan-gate-btn:hover{opacity:0.88;}
+.trade-limit-bar{
+  background:var(--dark3);border:1px solid var(--border-dim);
+  border-radius:var(--radius);padding:10px 16px;margin-bottom:12px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.trade-limit-text{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+.trade-limit-num{font-family:'DM Mono',monospace;font-size:12px;}
+.trade-limit-bar-wrap{width:120px;background:var(--dark4);border-radius:2px;height:4px;}
+.trade-limit-fill{height:100%;border-radius:2px;background:var(--gold);transition:width 0.8s ease;}
+ 
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border-dim);border-radius:2px;}
@@ -466,7 +499,7 @@ textarea.fi{resize:vertical;min-height:60px;}
     </div>
  
     <!-- ═══ ANALYTICS ═══ -->
-    <div class="page" id="page-analytics">
+    <div class="page" id="page-analytics" style="position:relative;">
       <div class="g2">
         <div class="card">
           <div class="ch"><span class="ct">時段分析</span><span class="cs">亞洲 / 倫敦 / 紐約</span></div>
@@ -504,7 +537,7 @@ textarea.fi{resize:vertical;min-height:60px;}
     </div>
  
     <!-- ═══ AI ═══ -->
-    <div class="page" id="page-ai">
+    <div class="page" id="page-ai" style="position:relative;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
         <div style="flex:1;">
           <div style="font-size:16px;font-weight:500;margin-bottom:3px;">AI 策略診斷報告</div>
@@ -674,7 +707,7 @@ function renderAll() {
   renderStats(); renderEquityCurve(); renderTagBreakdown();
   renderHeatmap(); renderStreak(); renderRecentTrades();
   renderFullTrades(); renderSessionAnalysis(); renderCharts();
-  renderAI(); renderSettings(); checkBackendStatus();
+  renderAI(); renderSettings(); checkBackendStatus(); setTimeout(applyPlanGates, 100);
 }
  
 // ── STATS ──
@@ -1089,6 +1122,79 @@ function showPage(name) {
   const [t,s] = pageTitles[name]||['',''];
   document.getElementById('topbarTitle').textContent = t;
   document.getElementById('topbarSub').textContent = s;
+  // Apply plan gates when switching pages
+  applyPlanGates();
+}
+ 
+function getPlan() {
+  const u = JSON.parse(localStorage.getItem('sj_user') || '{}');
+  return u.plan || 'free';
+}
+ 
+function applyPlanGates() {
+  const plan = getPlan();
+  const isFree = plan === 'free';
+  const isPro = plan === 'pro' || plan === 'whale';
+  const isWhale = plan === 'whale';
+ 
+  // Remove existing gates
+  document.querySelectorAll('.plan-gate').forEach(g => g.remove());
+  document.querySelectorAll('.trade-limit-bar').forEach(g => g.remove());
+ 
+  // Free: lock analytics and AI pages
+  if (isFree) {
+    ['page-analytics', 'page-ai'].forEach(pageId => {
+      const page = document.getElementById(pageId);
+      if (page && page.classList.contains('active')) {
+        const gate = document.createElement('div');
+        gate.className = 'plan-gate';
+        gate.innerHTML = `
+          <div class="plan-gate-box">
+            <div class="plan-gate-icon">🔒</div>
+            <div class="plan-gate-title">升級解鎖此功能</div>
+            <div class="plan-gate-sub">深度分析與 AI 診斷需要 Pro 或 Whale 方案</div>
+            <button class="plan-gate-btn" onclick="window.location.href='pricing.html'">升級 Pro — $19/月</button>
+          </div>`;
+        page.appendChild(gate);
+      }
+    });
+ 
+    // Trade limit bar on trades page
+    const tradesPage = document.getElementById('page-trades');
+    if (tradesPage && tradesPage.classList.contains('active')) {
+      const usedTrades = allTrades.length;
+      const maxTrades = 30;
+      const pct = Math.min(usedTrades / maxTrades * 100, 100);
+      const bar = document.createElement('div');
+      bar.className = 'trade-limit-bar';
+      bar.innerHTML = `
+        <div>
+          <div class="trade-limit-text">FREE 方案交易紀錄</div>
+          <div class="trade-limit-num" style="color:${usedTrades>=maxTrades?'var(--red)':'var(--gold)'};">${usedTrades} / ${maxTrades} 筆</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="trade-limit-bar-wrap"><div class="trade-limit-fill" style="width:${pct}%;background:${usedTrades>=maxTrades?'var(--red)':'var(--gold)'};"></div></div>
+          <a href="pricing.html" style="font-size:10px;color:var(--gold);text-decoration:none;font-family:'DM Mono',monospace;white-space:nowrap;">升級 →</a>
+        </div>`;
+      tradesPage.insertBefore(bar, tradesPage.firstChild);
+    }
+ 
+    // Lock sync buttons in settings
+    ['binanceSyncBtn','bybitSyncBtn','bingxSyncBtn'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.disabled = true;
+        btn.title = '需要 Pro 方案';
+        btn.style.opacity = '0.4';
+        btn.style.cursor = 'not-allowed';
+      }
+    });
+  }
+ 
+  // Whale-only features (future: show badge on non-whale)
+  if (!isWhale) {
+    // Could add whale-only UI here in the future
+  }
 }
 function setPeriod(p, btn) {
   currentPeriod=p;
