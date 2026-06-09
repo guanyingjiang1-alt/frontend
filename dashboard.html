@@ -19,10 +19,10 @@
   --sidebar:240px;
   --radius:10px;--radius-sm:6px;--radius-lg:14px;
 }
- 
+
 body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;display:flex;min-height:100vh;overflow-x:hidden;}
 .mono{font-family:'DM Mono',monospace;}
- 
+
 /* ── SIDEBAR ── */
 .sidebar{
   width:var(--sidebar);flex-shrink:0;
@@ -36,7 +36,7 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;f
 .logo-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:glow-pulse 2s infinite;}
 @keyframes glow-pulse{0%,100%{box-shadow:0 0 0 0 rgba(230,184,74,0.4);}50%{box-shadow:0 0 0 6px rgba(230,184,74,0);}}
 .logo-sub{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:0.06em;margin-top:2px;}
- 
+
 .sidebar-user{
   margin:12px;padding:12px;
   background:var(--dark3);border:1px solid var(--border-dim);border-radius:var(--radius);
@@ -56,7 +56,7 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;f
   color:var(--gold);letter-spacing:0.08em;margin-top:2px;
   background:var(--gold-glow);padding:1px 6px;border-radius:3px;
 }
- 
+
 .sidebar-nav{padding:8px 0;flex:1;overflow-y:auto;}
 .nav-group-label{
   padding:12px 18px 4px;font-family:'DM Mono',monospace;font-size:9px;
@@ -76,7 +76,7 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;f
   border-color:var(--border);
 }
 .nav-item .ni{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
- 
+
 .sidebar-footer{padding:12px;border-top:1px solid var(--border-dim);}
 .logout-btn{
   width:100%;background:none;border:1px solid var(--border-dim);
@@ -84,10 +84,10 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;f
   font-size:12px;cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif;
 }
 .logout-btn:hover{border-color:var(--red);color:var(--red);}
- 
+
 /* ── MAIN ── */
 .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
- 
+
 .topbar{
   padding:14px 28px;
   border-bottom:1px solid var(--border-dim);
@@ -116,13 +116,13 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;f
   cursor:pointer;transition:opacity 0.2s;letter-spacing:0.02em;
 }
 .btn-new:hover{opacity:0.88;}
- 
+
 /* ── CONTENT ── */
 .content{padding:24px 28px;flex:1;}
 .page{display:none;}
 .page.active{display:block;animation:fadeUp 0.25s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
- 
+
 /* ── STAT CARDS ── */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
 .stat-card{
@@ -149,14 +149,14 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;f
 .s-change{font-size:11px;color:var(--muted);margin-top:6px;display:flex;align-items:center;gap:4px;}
 .s-change .up{color:var(--green);}
 .s-change .dn{color:var(--red);}
- 
+
 /* ── GRID LAYOUTS ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
 .g7-5{display:grid;grid-template-columns:7fr 5fr;gap:12px;margin-bottom:12px;}
 .g5-7{display:grid;grid-template-columns:5fr 7fr;gap:12px;margin-bottom:12px;}
 .mb{margin-bottom:12px;}
- 
+
 /* ── CARD ── */
 .card{
   background:var(--dark2);border:1px solid var(--border-dim);
@@ -171,7 +171,7 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;f
 .cb{padding:18px;}
 .chart-pad{padding:12px 18px 18px;}
 .chart-pad canvas{max-height:200px;}
- 
+
 /* ── TABLE ── */
 .tt{width:100%;border-collapse:collapse;}
 .tt th{
@@ -191,13 +191,13 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;f
 .sb{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;letter-spacing:0.04em;}
 .sb-l{background:var(--green-dim);color:var(--green);}
 .sb-s{background:var(--red-dim);color:var(--red);}
- 
+
 /* ── PROGRESS ── */
 .pr{margin-bottom:14px;}
 .pr-h{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;}
 .pr-bg{background:var(--dark4);border-radius:2px;height:5px;}
 .pr-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);}
- 
+
 /* ── HEATMAP ── */
 .hm-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:12px 18px 18px;}
 .hm-cell{aspect-ratio:1;border-radius:4px;cursor:pointer;transition:transform 0.12s,opacity 0.12s;}
@@ -205,7 +205,7 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;f
 .hm-labels{display:flex;gap:3px;padding:0 18px;margin-bottom:5px;}
 .hm-day{flex:1;text-align:center;font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);}
 .hm-month{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);padding:0 18px 5px;letter-spacing:0.06em;}
- 
+
 /* ── SESSION ── */
 .sess-list{display:flex;flex-direction:column;gap:12px;padding:14px 18px 18px;}
 .sess-row{display:flex;align-items:center;gap:10px;}
@@ -213,7 +213,7 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;f
 .sess-bar-bg{flex:1;background:var(--dark4);border-radius:2px;height:6px;overflow:hidden;}
 .sess-bar{height:100%;border-radius:2px;transition:width 1s ease;}
 .sess-stat{font-family:'DM Mono',monospace;font-size:11px;width:44px;text-align:right;flex-shrink:0;}
- 
+
 /* ── STREAK ── */
 .streak-wrap{display:flex;align-items:center;justify-content:space-around;padding:20px 18px;}
 .streak-item{text-align:center;}
@@ -222,7 +222,7 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;f
 .streak-num.loss{color:var(--red);}
 .streak-lbl{font-size:10px;color:var(--muted);margin-top:5px;font-family:'DM Mono',monospace;}
 .streak-div{width:1px;height:48px;background:var(--border-dim);}
- 
+
 /* ── INSIGHT ── */
 .insight{
   background:var(--dark3);border:1px solid var(--border-dim);
@@ -239,7 +239,7 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;f
 .insight-body strong{color:var(--gold);font-weight:500;}
 .insight-body .pos{color:var(--green);}
 .insight-body .neg{color:var(--red);}
- 
+
 /* ── FORM ── */
 .fovl{
   position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);
@@ -291,13 +291,13 @@ textarea.fi{resize:vertical;min-height:60px;}
 }
 .btn-submit:hover{opacity:0.88;}
 .btn-submit:disabled{opacity:0.45;cursor:not-allowed;}
- 
+
 /* ── EMPTY ── */
 .empty{text-align:center;padding:40px 20px;color:var(--muted);}
 .empty-icon{font-size:32px;margin-bottom:10px;}
 .empty-title{font-size:14px;color:var(--text);margin-bottom:6px;font-weight:500;}
 .empty-desc{font-size:12px;line-height:1.7;}
- 
+
 /* ── LOADING ── */
 .loading-screen{
   position:fixed;inset:0;background:var(--dark);z-index:999;
@@ -309,9 +309,9 @@ textarea.fi{resize:vertical;min-height:60px;}
 .load-bar{width:120px;height:2px;background:var(--dark4);border-radius:1px;overflow:hidden;}
 .load-fill{height:100%;background:var(--gold);border-radius:1px;animation:load-anim 1.5s ease infinite;}
 @keyframes load-anim{0%{width:0%;transform:translateX(0);}50%{width:60%;}100%{width:100%;}}
- 
+
 /* ── SCROLLBAR ── */
- 
+
 /* ── PLAN GATE ── */
 .plan-gate{
   position:absolute;inset:0;z-index:10;
@@ -343,11 +343,11 @@ textarea.fi{resize:vertical;min-height:60px;}
 .trade-limit-num{font-family:'DM Mono',monospace;font-size:12px;}
 .trade-limit-bar-wrap{width:120px;background:var(--dark4);border-radius:2px;height:4px;}
 .trade-limit-fill{height:100%;border-radius:2px;background:var(--gold);transition:width 0.8s ease;}
- 
+
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border-dim);border-radius:2px;}
- 
+
 /* ── SETTINGS INPUT ── */
 .set-btn{
   background:var(--gold);color:var(--dark);border:none;
@@ -362,13 +362,13 @@ textarea.fi{resize:vertical;min-height:60px;}
 </style>
 </head>
 <body>
- 
+
 <!-- LOADING -->
 <div class="loading-screen" id="loadingScreen">
   <div class="load-logo">SmartJournal AI</div>
   <div class="load-bar"><div class="load-fill"></div></div>
 </div>
- 
+
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-top">
@@ -397,7 +397,7 @@ textarea.fi{resize:vertical;min-height:60px;}
     <button class="logout-btn" onclick="handleLogout()">登出帳號</button>
   </div>
 </aside>
- 
+
 <!-- MAIN -->
 <main class="main">
   <div class="topbar">
@@ -415,9 +415,9 @@ textarea.fi{resize:vertical;min-height:60px;}
       <button class="btn-new" onclick="openTradeForm()">+ 新增</button>
     </div>
   </div>
- 
+
   <div class="content">
- 
+
     <!-- ═══ OVERVIEW ═══ -->
     <div class="page active" id="page-overview">
       <div class="stats-grid">
@@ -442,7 +442,7 @@ textarea.fi{resize:vertical;min-height:60px;}
           <div class="s-change" id="statTotalSub"></div>
         </div>
       </div>
- 
+
       <div class="g7-5">
         <div class="card">
           <div class="ch"><span class="ct">資產曲線</span><span class="cs" id="equityCurveLabel">累計損益</span></div>
@@ -453,7 +453,7 @@ textarea.fi{resize:vertical;min-height:60px;}
           <div class="cb" id="tagBreakdown"></div>
         </div>
       </div>
- 
+
       <div class="g2">
         <div class="card">
           <div class="ch"><span class="ct">月曆熱力圖</span><span class="cs">每日損益</span></div>
@@ -471,13 +471,13 @@ textarea.fi{resize:vertical;min-height:60px;}
           <div style="padding:8px 18px 14px;display:flex;gap:3px;align-items:flex-end;" id="recentDots"></div>
         </div>
       </div>
- 
+
       <div class="card mb">
         <div class="ch"><span class="ct">最近交易</span><a onclick="showPage('trades')" style="font-size:11px;color:var(--gold);cursor:pointer;font-family:'DM Mono',monospace;">全部 →</a></div>
         <div id="recentTradesTable"></div>
       </div>
     </div>
- 
+
     <!-- ═══ TRADES ═══ -->
     <div class="page" id="page-trades">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
@@ -497,7 +497,7 @@ textarea.fi{resize:vertical;min-height:60px;}
         <div id="fullTradesTable"></div>
       </div>
     </div>
- 
+
     <!-- ═══ ANALYTICS ═══ -->
     <div class="page" id="page-analytics" style="position:relative;">
       <div class="g2">
@@ -535,7 +535,7 @@ textarea.fi{resize:vertical;min-height:60px;}
         </div>
       </div>
     </div>
- 
+
     <!-- ═══ AI ═══ -->
     <div class="page" id="page-ai" style="position:relative;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
@@ -547,11 +547,11 @@ textarea.fi{resize:vertical;min-height:60px;}
       </div>
       <div id="aiInsights"></div>
     </div>
- 
+
     <!-- ═══ SETTINGS ═══ -->
     <div class="page" id="page-settings">
       <div style="max-width:540px;display:flex;flex-direction:column;gap:16px;">
- 
+
         <div class="card">
           <div class="ch"><span class="ct">帳號資訊</span></div>
           <div class="cb">
@@ -562,7 +562,7 @@ textarea.fi{resize:vertical;min-height:60px;}
             <a href="pricing.html" class="set-link">⚡ 升級方案 →</a>
           </div>
         </div>
- 
+
         <div class="card">
           <div class="ch"><span class="ct">Binance 同步</span><span class="cs">唯讀權限</span></div>
           <div class="cb">
@@ -572,7 +572,7 @@ textarea.fi{resize:vertical;min-height:60px;}
             <div class="sync-result" id="binanceResult"></div>
           </div>
         </div>
- 
+
         <div class="card">
           <div class="ch"><span class="ct">Bybit 同步</span><span class="cs">唯讀權限</span></div>
           <div class="cb">
@@ -582,7 +582,7 @@ textarea.fi{resize:vertical;min-height:60px;}
             <div class="sync-result" id="bybitResult"></div>
           </div>
         </div>
- 
+
         <div class="card">
           <div class="ch"><span class="ct">BingX 同步</span><span class="cs">唯讀權限</span></div>
           <div class="cb">
@@ -592,18 +592,18 @@ textarea.fi{resize:vertical;min-height:60px;}
             <div class="sync-result" id="bingxResult"></div>
           </div>
         </div>
- 
+
         <div class="card">
           <div class="ch"><span class="ct">後端狀態</span></div>
           <div class="cb" id="backendStatus" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">檢測中...</div>
         </div>
- 
+
       </div>
     </div>
- 
+
   </div>
 </main>
- 
+
 <!-- TRADE FORM -->
 <div class="fovl" id="tradeFormOverlay" onclick="handleFormOverlay(event)">
   <div class="tform">
@@ -653,15 +653,15 @@ textarea.fi{resize:vertical;min-height:60px;}
     </div>
   </div>
 </div>
- 
+
 <script>
 const API = 'https://web-production-6cef6.up.railway.app/api/v1';
 let token = localStorage.getItem('sj_token');
 let user = JSON.parse(localStorage.getItem('sj_user') || 'null');
 let allTrades = [], stats = null, currentPeriod = '30d', selectedTags = [];
- 
+
 if (!token) window.location.href = 'index.html';
- 
+
 async function apiFetch(path, opts = {}) {
   const res = await fetch(`${API}${path}`, {
     ...opts,
@@ -670,13 +670,13 @@ async function apiFetch(path, opts = {}) {
   if (res.status === 401) { handleLogout(); throw new Error('Unauthorized'); }
   return res;
 }
- 
+
 function handleLogout() {
   localStorage.removeItem('sj_token');
   localStorage.removeItem('sj_user');
   window.location.href = 'index.html';
 }
- 
+
 async function init() {
   if (user) {
     const initials = (user.display_name || user.email).substring(0,2).toUpperCase();
@@ -691,7 +691,7 @@ async function init() {
   } catch(e) { console.error(e); }
   document.getElementById('loadingScreen').classList.add('hidden');
 }
- 
+
 async function loadData() {
   try {
     const [tradeRes, statRes] = await Promise.all([apiFetch('/trades/?limit=200'), apiFetch('/trades/stats')]);
@@ -702,14 +702,14 @@ async function loadData() {
   }
   renderAll();
 }
- 
+
 function renderAll() {
   renderStats(); renderEquityCurve(); renderTagBreakdown();
   renderHeatmap(); renderStreak(); renderRecentTrades();
   renderFullTrades(); renderSessionAnalysis(); renderCharts();
   renderAI(); renderSettings(); checkBackendStatus(); setTimeout(applyPlanGates, 100);
 }
- 
+
 // ── STATS ──
 function renderStats() {
   const s = stats || getMockStats();
@@ -722,7 +722,7 @@ function renderStats() {
   document.getElementById('statTotal').textContent = s.total_trades;
   document.getElementById('statTotalSub').innerHTML = '<span>已平倉交易</span>';
 }
- 
+
 // ── EQUITY ──
 let eqChart = null;
 function renderEquityCurve() {
@@ -752,7 +752,7 @@ function renderEquityCurve() {
       }}
   });
 }
- 
+
 // ── TAG BREAKDOWN ──
 function renderTagBreakdown() {
   const s = stats || getMockStats();
@@ -772,7 +772,7 @@ function renderTagBreakdown() {
     </div>`;
   }).join('');
 }
- 
+
 // ── HEATMAP ──
 function renderHeatmap() {
   const now = new Date(), year = now.getFullYear(), month = now.getMonth();
@@ -805,7 +805,7 @@ function renderHeatmap() {
     grid.appendChild(el);
   }
 }
- 
+
 // ── STREAK ──
 function renderStreak() {
   const closed = allTrades.filter(t => t.status === 'closed' && t.pnl != null)
@@ -841,7 +841,7 @@ function renderStreak() {
     return `<div style="flex:1;background:${t.pnl>0?'var(--green)':'var(--red)'};border-radius:2px;height:${h}px;opacity:0.75;" title="${t.symbol}: ${t.pnl>=0?'+':''}$${t.pnl.toFixed(2)}"></div>`;
   }).join('');
 }
- 
+
 // ── TABLES ──
 function renderTradeTable(trades, id, limit) {
   const el = document.getElementById(id);
@@ -885,7 +885,7 @@ function filterTrades() {
   document.getElementById('filterCount').textContent = `${f.length} / ${allTrades.length} 筆`;
   renderTradeTable(f, 'fullTradesTable', null);
 }
- 
+
 // ── SESSION ──
 function renderSessionAnalysis() {
   const snames = {asia:'亞洲盤',london:'倫敦盤',ny:'紐約盤'};
@@ -905,7 +905,7 @@ function renderSessionAnalysis() {
     <div style="font-size:10px;color:var(--muted);padding:0 0 8px 66px;font-family:'DM Mono',monospace;">${d.count} 筆 · ${d.pnl>=0?'+':''}$${d.pnl.toFixed(0)}</div>`
   ).join('');
 }
- 
+
 // ── CHARTS ──
 const charts = {};
 function dc(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
@@ -913,7 +913,7 @@ const co = { responsive:true, plugins:{legend:{display:false}}, scales:{
   x:{ticks:{color:'#6B7585',font:{size:9}},grid:{color:'rgba(255,255,255,0.03)'}},
   y:{ticks:{color:'#6B7585',font:{size:9}},grid:{color:'rgba(255,255,255,0.03)'}}
 }};
- 
+
 function renderCharts() {
   // Radar
   dc('sessionRadar');
@@ -925,7 +925,7 @@ function renderCharts() {
       datasets:[{data:[...sc,dc_[0],dc_[2],dc_[4]], borderColor:'var(--gold)', backgroundColor:'rgba(230,184,74,0.08)', borderWidth:1.5, pointBackgroundColor:'var(--gold)',pointRadius:3}]},
     options:{responsive:true,plugins:{legend:{display:false}},scales:{r:{ticks:{color:'#6B7585',font:{size:8}},grid:{color:'rgba(255,255,255,0.05)'},pointLabels:{color:'#8A95A5',font:{size:9}}}}}
   });
- 
+
   // Symbol bar
   dc('symbolBar');
   const sm = {}; allTrades.filter(t=>t.pnl!=null).forEach(t=>{sm[t.symbol]=(sm[t.symbol]||0)+t.pnl;});
@@ -935,7 +935,7 @@ function renderCharts() {
       datasets:[{data:ss.map(([,v])=>+v.toFixed(2)), backgroundColor:ss.map(([,v])=>v>=0?'rgba(5,214,122,0.65)':'rgba(240,75,107,0.65)'), borderRadius:4}]},
     options:{...co, plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`$${c.raw}`}}}}
   });
- 
+
   // PnL histogram
   dc('pnlHistogram');
   const pnls = allTrades.filter(t=>t.pnl!=null).map(t=>t.pnl);
@@ -948,7 +948,7 @@ function renderCharts() {
       options:{...co}
     });
   }
- 
+
   // MDD
   dc('mddChart');
   const mc = allTrades.filter(t=>t.pnl!=null).sort((a,b)=>new Date(a.opened_at)-new Date(b.opened_at));
@@ -958,7 +958,7 @@ function renderCharts() {
     type:'line', data:{labels:mc.map((_,i)=>i+1),datasets:[{data:dd,borderColor:'rgba(240,75,107,0.75)',backgroundColor:'rgba(240,75,107,0.08)',borderWidth:1.5,fill:true,tension:0.2,pointRadius:0}]},
     options:{...co,plugins:{legend:{display:false}},scales:{x:{...co.scales.x},y:{...co.scales.y,ticks:{...co.scales.y.ticks,callback:v=>`$${v}`}}}}
   });
- 
+
   // Pie
   dc('longShortPie');
   const lg=allTrades.filter(t=>t.side==='long').length, sh=allTrades.filter(t=>t.side==='short').length;
@@ -966,7 +966,7 @@ function renderCharts() {
     type:'doughnut', data:{labels:['LONG','SHORT'],datasets:[{data:[lg||1,sh||1],backgroundColor:['rgba(5,214,122,0.65)','rgba(240,75,107,0.65)'],borderColor:['#05D67A','#F04B6B'],borderWidth:1}]},
     options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#6B7585',font:{size:9},padding:10}}},cutout:'68%'}
   });
- 
+
   // Holding time
   dc('holdingTime');
   const hb={'<1h':0,'1-4h':0,'4-24h':0,'1-3d':0,'>3d':0};
@@ -979,7 +979,7 @@ function renderCharts() {
     options:{...co, indexAxis:'y', plugins:{legend:{display:false}}}
   });
 }
- 
+
 // ── AI ──
 function renderAI() {
   const el = document.getElementById('aiInsights');
@@ -1018,7 +1018,7 @@ function runAIDiagnosis() {
   btn.disabled = true; btn.textContent = '分析中...';
   setTimeout(()=>{renderAI();btn.disabled=false;btn.textContent='重新分析';},600);
 }
- 
+
 // ── SETTINGS ──
 function renderSettings() {
   if (user) {
@@ -1028,7 +1028,7 @@ function renderSettings() {
   }
 }
 async function saveSettings() { alert('已儲存（後端 PATCH /auth/me 待實作）'); }
- 
+
 async function syncExchange(ex) {
   const key = document.getElementById(`${ex}Key`).value.trim();
   const sec = document.getElementById(`${ex}Secret`).value.trim();
@@ -1048,7 +1048,7 @@ async function syncExchange(ex) {
   } catch(e) { el.innerHTML = `<span style="color:var(--red)">${e.message}</span>`; }
   btn.disabled = false; btn.textContent = `同步 ${ex==='binance'?'Binance':ex==='bybit'?'Bybit':'BingX'}`;
 }
- 
+
 async function checkBackendStatus() {
   try {
     const res = await fetch(`${API.replace('/api/v1','')}/health`, {signal:AbortSignal.timeout(3000)});
@@ -1058,7 +1058,7 @@ async function checkBackendStatus() {
     document.getElementById('backendStatus').innerHTML = `<span style="color:var(--red)">✗ 無法連線</span> — 目前顯示 Mock 資料`;
   }
 }
- 
+
 // ── FORM ──
 function openTradeForm() {
   document.getElementById('tradeFormOverlay').classList.add('open');
@@ -1104,7 +1104,7 @@ async function submitTrade() {
   } catch(e) { errEl.textContent=e.message; errEl.style.display='block'; }
   btn.disabled=false; btn.textContent='儲存交易';
 }
- 
+
 // ── NAV ──
 const pageTitles = {
   overview:['總覽儀表板','歡迎回來，查看你的交易表現'],
@@ -1125,22 +1125,22 @@ function showPage(name) {
   // Apply plan gates when switching pages
   applyPlanGates();
 }
- 
+
 function getPlan() {
   const u = JSON.parse(localStorage.getItem('sj_user') || '{}');
   return u.plan || 'free';
 }
- 
+
 function applyPlanGates() {
   const plan = getPlan();
   const isFree = plan === 'free';
   const isPro = plan === 'pro' || plan === 'whale';
   const isWhale = plan === 'whale';
- 
+
   // Remove existing gates
   document.querySelectorAll('.plan-gate').forEach(g => g.remove());
   document.querySelectorAll('.trade-limit-bar').forEach(g => g.remove());
- 
+
   // Free: lock analytics and AI pages
   if (isFree) {
     ['page-analytics', 'page-ai'].forEach(pageId => {
@@ -1158,7 +1158,7 @@ function applyPlanGates() {
         page.appendChild(gate);
       }
     });
- 
+
     // Trade limit bar on trades page
     const tradesPage = document.getElementById('page-trades');
     if (tradesPage && tradesPage.classList.contains('active')) {
@@ -1178,7 +1178,7 @@ function applyPlanGates() {
         </div>`;
       tradesPage.insertBefore(bar, tradesPage.firstChild);
     }
- 
+
     // Lock sync buttons in settings
     ['binanceSyncBtn','bybitSyncBtn','bingxSyncBtn'].forEach(id => {
       const btn = document.getElementById(id);
@@ -1190,7 +1190,7 @@ function applyPlanGates() {
       }
     });
   }
- 
+
   // Whale-only features (future: show badge on non-whale)
   if (!isWhale) {
     // Could add whale-only UI here in the future
@@ -1201,7 +1201,7 @@ function setPeriod(p, btn) {
   document.querySelectorAll('.period-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active'); renderAll();
 }
- 
+
 // ── MOCK ──
 function getMockTrades() {
   const syms=['BTC/USDT','ETH/USDT','SOL/USDT','BNB/USDT'];
@@ -1237,7 +1237,7 @@ function getMockStats() {
     tag_breakdown:Object.fromEntries(Object.entries(tm).map(([k,v])=>[k,{count:v.count,win_rate:Math.round(v.wins/v.count*100)}]))
   };
 }
- 
+
 init();
 </script>
 </body>
