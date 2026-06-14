@@ -6,9 +6,7 @@
 <title>SmartJournal AI — 交易日誌分析平台</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -20,7 +18,6 @@
 body { background: var(--dark); color: var(--text); font-family: 'Noto Sans TC', sans-serif; font-weight: 300; overflow-x: hidden; }
 .mono { font-family: 'Space Mono', monospace; }
 
-/* NAV */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
@@ -39,7 +36,6 @@ nav ul a:hover { color: var(--text); }
 .btn-nav-gold { background: var(--gold); color: var(--dark); border: none; padding: 8px 20px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
 .btn-nav-gold:hover { opacity: 0.85; }
 
-/* HERO */
 .hero { min-height: 100vh; display: flex; align-items: center; padding: 120px 48px 80px; position: relative; overflow: hidden; }
 .hero-grid {
   position: absolute; inset: 0;
@@ -64,7 +60,6 @@ h1 .dim { color: var(--muted); }
 .hero-note { font-size: 12px; color: var(--muted); margin-top: 16px; }
 .hero-note span { color: var(--green); }
 
-/* TICKER */
 .ticker-bar { background: var(--dark2); border-top: 0.5px solid var(--border-dim); border-bottom: 0.5px solid var(--border-dim); padding: 12px 0; overflow: hidden; white-space: nowrap; }
 .ticker-inner { display: inline-flex; gap: 48px; animation: scroll 20s linear infinite; }
 .ticker-item { display: flex; align-items: center; gap: 10px; font-family: 'Space Mono', monospace; font-size: 12px; }
@@ -74,20 +69,17 @@ h1 .dim { color: var(--muted); }
 .dn { background: rgba(255,77,106,0.12); color: var(--red); }
 @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-/* PROOF BAR */
 .proof-bar { background: var(--dark3); border-bottom: 0.5px solid var(--border-dim); padding: 20px 48px; display: flex; align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap; }
 .proof-item { display: flex; align-items: center; gap: 12px; }
 .proof-num { font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700; color: var(--gold); }
 .proof-label { font-size: 12px; color: var(--muted); line-height: 1.4; max-width: 100px; }
 .proof-divider { width: 1px; height: 32px; background: var(--border-dim); }
 
-/* SECTION */
 section { padding: 96px 48px; }
 .section-label { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 16px; }
 .section-title { font-size: clamp(28px, 3.5vw, 44px); font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 16px; }
 .section-sub { font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 560px; }
 
-/* PAIN POINTS */
 .pain-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border-dim); border: 0.5px solid var(--border-dim); border-radius: 12px; overflow: hidden; margin-top: 64px; }
 .pain-card { background: var(--dark2); padding: 36px 32px; transition: background 0.3s; }
 .pain-card:hover { background: var(--dark3); }
@@ -95,7 +87,6 @@ section { padding: 96px 48px; }
 .pain-title { font-size: 16px; font-weight: 500; margin-bottom: 10px; }
 .pain-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
 
-/* FEATURES */
 .features-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 24px; margin-top: 64px; }
 .feature-card { background: var(--dark2); border: 0.5px solid var(--border-dim); border-radius: 12px; padding: 32px; transition: border-color 0.3s; position: relative; overflow: hidden; }
 .feature-card:hover { border-color: var(--border); }
@@ -106,7 +97,6 @@ section { padding: 96px 48px; }
 .feature-desc { font-size:14px; color:var(--muted); line-height:1.7; }
 .feature-full { grid-column: 1 / -1; }
 
-/* PRICING */
 .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 64px; align-items: start; }
 .plan-card { background: var(--dark2); border: 0.5px solid var(--border-dim); border-radius: 12px; padding: 32px; position: relative; transition: all 0.3s; }
 .plan-card:hover { transform: translateY(-4px); }
@@ -127,7 +117,6 @@ section { padding: 96px 48px; }
 .plan-btn.solid { background:var(--gold); color:var(--dark); }
 .plan-btn.solid:hover { opacity:0.9; }
 
-/* TESTIMONIALS */
 .testimonials-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:64px; }
 .testimonial-card { background:var(--dark2); border:0.5px solid var(--border-dim); border-radius:12px; padding:28px; transition:all 0.3s; }
 .testimonial-card:hover { border-color:var(--border); transform:translateY(-3px); }
@@ -139,7 +128,6 @@ section { padding: 96px 48px; }
 .testi-name { font-size:13px; font-weight:500; margin-bottom:2px; }
 .testi-role { font-size:11px; color:var(--muted); font-family:'Space Mono',monospace; }
 
-/* FAQ */
 .faq-list { margin-top:64px; display:flex; flex-direction:column; max-width:720px; }
 .faq-item { border-bottom:0.5px solid var(--border-dim); }
 .faq-item:first-child { border-top:0.5px solid var(--border-dim); }
@@ -150,23 +138,20 @@ section { padding: 96px 48px; }
 .faq-answer { font-size:14px; color:var(--muted); line-height:1.8; max-height:0; overflow:hidden; transition:max-height 0.4s ease, padding 0.3s; }
 .faq-item.open .faq-answer { max-height:300px; padding-bottom:24px; }
 
-/* CTA */
 .cta-section { text-align:center; padding:96px 48px; background:var(--dark2); border-top:0.5px solid var(--border-dim); }
 .cta-title { font-size:clamp(32px,4vw,52px); font-weight:700; letter-spacing:-0.02em; margin-bottom:16px; }
 .cta-sub { font-size:16px; color:var(--muted); margin-bottom:40px; }
 
-/* FOOTER */
 footer { padding:32px 48px; border-top:0.5px solid var(--border-dim); display:flex; align-items:center; justify-content:space-between; }
 .footer-text { font-size:12px; color:var(--muted); font-family:'Space Mono',monospace; }
 .security-badge { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--green); }
 
-/* FADE IN */
 .fade-in { opacity:0; transform:translateY(24px); transition:opacity 0.6s ease, transform 0.6s ease; }
 .fade-in.visible { opacity:1; transform:translateY(0); }
 
 /* AUTH MODAL */
 .modal-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px);
+  position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px);
   z-index:1000; display:flex; align-items:center; justify-content:center;
   opacity:0; pointer-events:none; transition:opacity 0.3s;
 }
@@ -174,58 +159,34 @@ footer { padding:32px 48px; border-top:0.5px solid var(--border-dim); display:fl
 .modal {
   background:var(--dark2); border:0.5px solid var(--border);
   border-radius:16px; padding:40px; width:100%; max-width:420px;
-  transform:translateY(16px); transition:transform 0.3s;
-  position:relative;
+  transform:translateY(16px); transition:transform 0.3s; position:relative;
 }
 .modal-overlay.open .modal { transform:translateY(0); }
 .modal-close { position:absolute; top:16px; right:20px; background:none; border:none; color:var(--muted); font-size:20px; cursor:pointer; transition:color 0.2s; }
 .modal-close:hover { color:var(--text); }
-.modal-tabs { display:flex; gap:0; margin-bottom:24px; border-bottom:0.5px solid var(--border-dim); }
+.modal-tabs { display:flex; margin-bottom:24px; border-bottom:0.5px solid var(--border-dim); }
 .modal-tab { flex:1; background:none; border:none; color:var(--muted); font-family:'Space Mono',monospace; font-size:13px; padding:12px 0; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-0.5px; transition:all 0.2s; }
 .modal-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
-.modal-logo { font-family:'Space Mono',monospace; font-size:16px; color:var(--gold); margin-bottom:8px; }
+.modal-logo { font-family:'Space Mono',monospace; font-size:16px; color:var(--gold); margin-bottom:6px; }
 .modal-logo span { color:var(--text); opacity:0.5; }
-.modal-subtitle { font-size:13px; color:var(--muted); margin-bottom:24px; }
-.form-group { margin-bottom:16px; }
-.form-label { font-size:12px; color:var(--muted); font-family:'Space Mono',monospace; letter-spacing:0.06em; display:block; margin-bottom:8px; }
-.form-input {
-  width:100%; background:var(--dark3); border:0.5px solid var(--border-dim);
-  color:var(--text); padding:12px 16px; border-radius:6px;
-  font-family:'Noto Sans TC',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s;
-}
+.modal-subtitle { font-size:13px; color:var(--muted); margin-bottom:20px; }
+.form-group { margin-bottom:14px; }
+.form-label { font-size:12px; color:var(--muted); font-family:'Space Mono',monospace; letter-spacing:0.06em; display:block; margin-bottom:6px; }
+.form-input { width:100%; background:var(--dark3); border:0.5px solid var(--border-dim); color:var(--text); padding:11px 14px; border-radius:6px; font-family:'Noto Sans TC',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
 .form-input:focus { border-color:var(--gold); }
 .form-input::placeholder { color:var(--muted); }
 .form-error { font-size:12px; color:var(--red); margin-top:6px; display:none; }
 .form-error.show { display:block; }
-.btn-full { width:100%; padding:14px; background:var(--gold); color:var(--dark); border:none; border-radius:6px; font-family:'Space Mono',monospace; font-size:13px; font-weight:700; cursor:pointer; transition:opacity 0.2s; margin-top:8px; }
+.btn-full { width:100%; padding:13px; background:var(--gold); color:var(--dark); border:none; border-radius:6px; font-family:'Space Mono',monospace; font-size:13px; font-weight:700; cursor:pointer; transition:opacity 0.2s; margin-top:6px; }
 .btn-full:hover { opacity:0.9; }
 .btn-full:disabled { opacity:0.5; cursor:not-allowed; }
-.modal-footer-note { font-size:12px; color:var(--muted); text-align:center; margin-top:16px; }
+.modal-footer-note { font-size:12px; color:var(--muted); text-align:center; margin-top:14px; }
 
-/* GOOGLE AUTH STYLE */
-.oauth-divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  color: var(--muted);
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  margin: 24px 0 16px 0;
-}
-.oauth-divider::before, .oauth-divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 0.5px solid var(--border-dim);
-}
-.oauth-divider:not(:empty)::before { margin-right: 1em; }
-.oauth-divider:not(:empty)::after { margin-left: 1em; }
-
-.google-btn-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 8px;
-  width: 100%;
-}
+.oauth-divider { display:flex; align-items:center; color:var(--muted); font-family:'Space Mono',monospace; font-size:11px; margin:18px 0 14px; }
+.oauth-divider::before,.oauth-divider::after { content:''; flex:1; border-bottom:0.5px solid var(--border-dim); }
+.oauth-divider:not(:empty)::before { margin-right:1em; }
+.oauth-divider:not(:empty)::after { margin-left:1em; }
+.google-btn-wrap { display:flex; justify-content:center; margin-bottom:4px; }
 
 @media(max-width:768px) {
   nav { padding:14px 20px; } nav ul { display:none; }
@@ -266,9 +227,7 @@ footer { padding:32px 48px; border-top:0.5px solid var(--border-dim); display:fl
   </div>
 </section>
 
-<div class="ticker-bar">
-  <div class="ticker-inner" id="ticker"></div>
-</div>
+<div class="ticker-bar"><div class="ticker-inner" id="ticker"></div></div>
 
 <div class="proof-bar">
   <div class="proof-item"><div class="proof-num">47</div><div class="proof-label">交易員<br>已報名</div></div>
@@ -294,11 +253,11 @@ footer { padding:32px 48px; border-top:0.5px solid var(--border-dim); display:fl
   <div class="section-label">— 核心功能</div>
   <h2 class="section-title">省時、精準、有洞見</h2>
   <div class="features-grid">
-    <div class="feature-card fade-in"><div class="feature-num">01 —</div><div class="feature-title">API 自動同步，不再手動記帳</div><div class="feature-desc">綁定 Binance / Bybit 唯讀 API，每筆成交自動進入日誌，省下 90% 記帳時間。</div></div>
+    <div class="feature-card fade-in"><div class="feature-num">01 —</div><div class="feature-title">API 自動同步，不再手動記帳</div><div class="feature-desc">綁定 Binance / Bybit / BingX 唯讀 API，每筆成交自動進入日誌，省下 90% 記帳時間。</div></div>
     <div class="feature-card fade-in"><div class="feature-num">02 —</div><div class="feature-title">SMC 標籤系統</div><div class="feature-desc">一鍵標記 #OB-Mitigated、#FVG-Fill、#MSS、#FOMO，讓每一筆交易都有分類可查。</div></div>
     <div class="feature-card fade-in"><div class="feature-num">03 —</div><div class="feature-title">期望值 & 盈虧比自動計算</div><div class="feature-desc">EV、R:R、MDD、最大連虧一覽無遺。系統把數字轉化成可行動的洞見。</div></div>
     <div class="feature-card fade-in"><div class="feature-num">04 —</div><div class="feature-title">AI 策略診斷報告</div><div class="feature-desc">系統直接告訴你「你在 EUR/USD 的 OB 策略在亞洲盤表現最差」，有數字支撐的結論。</div></div>
-    <div class="feature-card feature-full fade-in"><div class="feature-num">05 —</div><div class="feature-title">時段 / 連勝連敗 / 月曆熱力圖分析</div><div class="feature-desc">深度儀表板：查看你在亞洲盤 vs 紐約盤的表現差異、連勝連敗紀錄、每天的損益熱力圖，找出你真正的交易邊緣。</div></div>
+    <div class="feature-card feature-full fade-in"><div class="feature-num">05 —</div><div class="feature-title">時段 / 連勝連敗 / 月曆熱力圖分析</div><div class="feature-desc">深度儀表板：查看亞洲盤 vs 紐約盤表現差異、連勝連敗紀錄、每天損益熱力圖，找出真正的交易邊緣。</div></div>
   </div>
 </section>
 
@@ -312,10 +271,10 @@ footer { padding:32px 48px; border-top:0.5px solid var(--border-dim); display:fl
       <div class="plan-desc">快速體驗，無需信用卡</div>
       <hr class="plan-divider">
       <ul class="plan-features">
-        <li class="active">綁定 1 個交易所 API</li>
-        <li class="active">每月 30 筆交易紀錄</li>
-        <li class="active">基本勝率圖表</li>
-        <li>進階策略分析</li><li>AI 診斷報告</li><li>週報匯出</li>
+        <li class="active">最多 30 筆交易紀錄</li>
+        <li class="active">基本總覽圖表</li>
+        <li>深度分析</li><li>AI 診斷報告</li>
+        <li>交易所 API 同步</li><li>週報匯出</li>
       </ul>
       <button class="plan-btn outline" onclick="openModal('register')">免費開始</button>
     </div>
@@ -326,9 +285,12 @@ footer { padding:32px 48px; border-top:0.5px solid var(--border-dim); display:fl
       <div class="plan-desc">認真交易員的標準配備</div>
       <hr class="plan-divider">
       <ul class="plan-features">
-        <li class="active">無限 API 串接</li><li class="active">無限交易紀錄</li>
-        <li class="active">SMC 策略勝率分析</li><li class="active">AI 診斷報告</li>
-        <li class="active">週報 PDF 匯出</li><li>一對一風控診斷</li>
+        <li class="active">無限交易紀錄</li>
+        <li class="active">深度分析全開</li>
+        <li class="active">AI 診斷報告</li>
+        <li class="active">Binance / Bybit / BingX 同步</li>
+        <li class="active">週報 PDF 匯出</li>
+        <li>高頻自動同步</li>
       </ul>
       <button class="plan-btn solid" onclick="openModal('register')">立即訂閱 Pro</button>
     </div>
@@ -338,11 +300,14 @@ footer { padding:32px 48px; border-top:0.5px solid var(--border-dim); display:fl
       <div class="plan-desc">高頻交易員與量化團隊</div>
       <hr class="plan-divider">
       <ul class="plan-features">
-        <li class="active">Pro 所有功能</li><li class="active">高頻 Webhook 警報</li>
-        <li class="active">一對一量化風控診斷</li><li class="active">優先客服支援</li>
-        <li class="active">自定義報告格式</li><li class="active">Beta 功能搶先體驗</li>
+        <li class="active">Pro 所有功能</li>
+        <li class="active">每小時自動同步</li>
+        <li class="active">CSV / PDF 報告匯出</li>
+        <li class="active">自訂標籤與策略分類</li>
+        <li class="active">優先客服支援</li>
+        <li class="active">Beta 功能搶先體驗</li>
       </ul>
-      <button class="plan-btn outline">聯繫我們</button>
+      <button class="plan-btn outline" onclick="openModal('register')">升級 Whale</button>
     </div>
   </div>
 </section>
@@ -362,9 +327,9 @@ footer { padding:32px 48px; border-top:0.5px solid var(--border-dim); display:fl
   <h2 class="section-title fade-in">你想問的，這裡都有答案</h2>
   <div class="faq-list">
     <div class="faq-item fade-in"><button class="faq-question" onclick="toggleFaq(this)">你們會用我的 API Key 動我的帳戶嗎？<span class="faq-arrow">+</span></button><div class="faq-answer">絕對不會。SmartJournal AI 只要求「唯讀權限」的 API Key，無法下單、提款或任何資金操作。</div></div>
-    <div class="faq-item fade-in"><button class="faq-question" onclick="toggleFaq(this)">支援哪些交易所？<span class="faq-arrow">+</span></button><div class="faq-answer">目前支援 Binance、Bybit（現貨與合約），以及 TradingView Webhook。Beta 後陸續加入 OKX、Kraken。</div></div>
+    <div class="faq-item fade-in"><button class="faq-question" onclick="toggleFaq(this)">支援哪些交易所？<span class="faq-arrow">+</span></button><div class="faq-answer">目前支援 Binance、Bybit、BingX（現貨與合約）。Beta 後陸續加入 OKX、Kraken。</div></div>
     <div class="faq-item fade-in"><button class="faq-question" onclick="toggleFaq(this)">如果我不懂 SMC，這個工具對我有用嗎？<span class="faq-arrow">+</span></button><div class="faq-answer">有用。標籤系統可自定義，你可以用自己的策略命名。SMC 標籤是預設選項，不是唯一選項。</div></div>
-    <div class="faq-item fade-in"><button class="faq-question" onclick="toggleFaq(this)">可以取消訂閱嗎？<span class="faq-arrow">+</span></button><div class="faq-answer">隨時可以，沒有違約金、沒有隱藏費用。取消後帳號自動降級為 Free 版，歷史資料不會被刪除。</div></div>
+    <div class="faq-item fade-in"><button class="faq-question" onclick="toggleFaq(this)">可以取消訂閱嗎？<span class="faq-arrow">+</span></button><div class="faq-answer">隨時可以，沒有違約金。取消後帳號自動降級為 Free 版，歷史資料不會被刪除。</div></div>
   </div>
 </section>
 
@@ -384,6 +349,7 @@ footer { padding:32px 48px; border-top:0.5px solid var(--border-dim); display:fl
   <div class="security-badge">🔒 只需唯讀 API 權限，永遠不會動你的資金</div>
 </footer>
 
+<!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal" onclick="handleOverlayClick(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -394,46 +360,27 @@ footer { padding:32px 48px; border-top:0.5px solid var(--border-dim); display:fl
       <button class="modal-tab" id="tabLogin" onclick="switchTab('login')">登入</button>
     </div>
 
+    <!-- REGISTER -->
     <div id="registerForm">
-      <div class="google-btn-container">
-        <div class="g_id_signin" data-type="standard"></div>
-      </div>
+      <div class="google-btn-wrap" id="googleBtnRegister"></div>
       <div class="oauth-divider">或使用 EMAIL 註冊</div>
-
-      <div class="form-group">
-        <label class="form-label">顯示名稱</label>
-        <input class="form-input" type="text" id="regName" placeholder="交易員暱稱">
-      </div>
-      <div class="form-group">
-        <label class="form-label">EMAIL</label>
-        <input class="form-input" type="email" id="regEmail" placeholder="your@email.com">
-      </div>
-      <div class="form-group">
-        <label class="form-label">密碼（最少 8 字元）</label>
-        <input class="form-input" type="password" id="regPw" placeholder="••••••••">
-      </div>
+      <div class="form-group"><label class="form-label">顯示名稱</label><input class="form-input" type="text" id="regName" placeholder="交易員暱稱"></div>
+      <div class="form-group"><label class="form-label">EMAIL</label><input class="form-input" type="email" id="regEmail" placeholder="your@email.com"></div>
+      <div class="form-group"><label class="form-label">密碼（最少 8 字元）</label><input class="form-input" type="password" id="regPw" placeholder="••••••••"></div>
       <div class="form-error" id="regError"></div>
       <button class="btn-full" id="regBtn" onclick="handleRegister()">建立帳號</button>
       <p class="modal-footer-note">已有帳號？<a href="#" onclick="switchTab('login')" style="color:var(--gold);text-decoration:none;">直接登入</a></p>
     </div>
 
+    <!-- LOGIN -->
     <div id="loginForm" style="display:none">
-      <div class="google-btn-container">
-        <div class="g_id_signin" data-type="standard"></div>
-      </div>
+      <div class="google-btn-wrap" id="googleBtnLogin"></div>
       <div class="oauth-divider">或使用 EMAIL 登入</div>
-
-      <div class="form-group">
-        <label class="form-label">EMAIL</label>
-        <input class="form-input" type="email" id="loginEmail" placeholder="your@email.com">
-      </div>
-      <div class="form-group">
-        <label class="form-label">密碼</label>
-        <input class="form-input" type="password" id="loginPw" placeholder="••••••••">
-      </div>
+      <div class="form-group"><label class="form-label">EMAIL</label><input class="form-input" type="email" id="loginEmail" placeholder="your@email.com"></div>
+      <div class="form-group"><label class="form-label">密碼</label><input class="form-input" type="password" id="loginPw" placeholder="••••••••"></div>
+      <p style="text-align:right;margin-bottom:10px;"><a href="reset-password.html" style="font-size:12px;color:var(--muted);text-decoration:none;">忘記密碼？</a></p>
       <div class="form-error" id="loginError"></div>
       <button class="btn-full" id="loginBtn" onclick="handleLogin()">登入</button>
-      <p style="text-align:right;margin-bottom:8px;"><a href="reset-password.html" style="font-size:12px;color:var(--muted);text-decoration:none;">忘記密碼？</a></p>
       <p class="modal-footer-note">還沒有帳號？<a href="#" onclick="switchTab('register')" style="color:var(--gold);text-decoration:none;">免費註冊</a></p>
     </div>
   </div>
@@ -441,60 +388,7 @@ footer { padding:32px 48px; border-top:0.5px solid var(--border-dim); display:fl
 
 <script>
 const API = 'https://web-production-6cef6.up.railway.app/api/v1';
-
-// Google OAuth 初始化設定
-window.onload = function () {
-  google.accounts.id.initialize({
-    client_id: "642137388997-sq6pgrlmbbvh8pujjlm9bihsnks4vono.apps.googleusercontent.com",
-    callback: handleCredentialResponse,
-    auto_select: false,
-    cancel_on_tap_outside: true
-  });
-
-  // 渲染具有你個人風格外觀的 Google 按鈕
-  google.accounts.id.renderButton(
-    document.querySelectorAll(".g_id_signin"),
-    { 
-      theme: "filled_dark", // 暗色模式
-      size: "large", 
-      width: "340", // 適配 Modal 寬度
-      shape: "rectangular",
-      logo_alignment: "left"
-    }
-  );
-}
-
-// 處理 Google 登入成功後的回傳 Token
-async function handleCredentialResponse(response) {
-  const errRegEl = document.getElementById('regError');
-  const errLoginEl = document.getElementById('loginError');
-  
-  errRegEl.classList.remove('show');
-  errLoginEl.classList.remove('show');
-
-  try {
-    // 發送 Token 至後端
-    const res = await fetch(`${API}/auth/google`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: response.credential })
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || 'Google 登入失敗');
-
-    // 儲存後端傳回的網站 Token
-    localStorage.setItem('sj_token', data.access_token);
-    localStorage.setItem('sj_user', JSON.stringify(data.user));
-    
-    window.location.href = 'dashboard.html';
-
-  } catch (e) {
-    const currentErrorEl = document.getElementById('registerForm').style.display === 'block' ? errRegEl : errLoginEl;
-    currentErrorEl.textContent = e.message;
-    currentErrorEl.classList.add('show');
-  }
-}
+const GOOGLE_CLIENT_ID = '642137388997-sq6pgrlmbbvh8pujjlm9bihsnks4vono.apps.googleusercontent.com';
 
 // Ticker
 const tickers = [
@@ -508,16 +402,69 @@ const tickerEl = document.getElementById('ticker');
   tickerEl.innerHTML += `<div class="ticker-item"><span class="ticker-sym">${t.s}</span><span class="ticker-price">${t.p}</span><span class="ticker-chg ${t.up?'up':'dn'}">${t.c}</span></div>`;
 });
 
+// Google 初始化
+function initGoogle() {
+  if (typeof google === 'undefined') return;
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleGoogleCallback,
+    auto_select: false,
+    cancel_on_tap_outside: true
+  });
+  renderGoogleBtn('googleBtnRegister');
+  renderGoogleBtn('googleBtnLogin');
+}
+
+function renderGoogleBtn(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  google.accounts.id.renderButton(el, {
+    theme: 'filled_dark', size: 'large', width: '340',
+    shape: 'rectangular', logo_alignment: 'left'
+  });
+}
+
+async function handleGoogleCallback(response) {
+  const errEl = document.getElementById(
+    document.getElementById('registerForm').style.display !== 'none' ? 'regError' : 'loginError'
+  );
+  errEl.classList.remove('show');
+  try {
+    const res = await fetch(`${API}/auth/google`, {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ token: response.credential })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Google 登入失敗');
+    localStorage.setItem('sj_token', data.access_token);
+    localStorage.setItem('sj_user', JSON.stringify(data.user));
+    window.location.href = 'dashboard.html';
+  } catch(e) {
+    errEl.textContent = e.message; errEl.classList.add('show');
+  }
+}
+
+// 等 Google script 載入完成再初始化
+if (typeof google !== 'undefined') {
+  initGoogle();
+} else {
+  window.addEventListener('load', () => { setTimeout(initGoogle, 500); });
+}
+
 // Modal
 function openModal(tab) {
   document.getElementById('authModal').classList.add('open');
   switchTab(tab);
   document.body.style.overflow = 'hidden';
+  // 重新渲染 Google 按鈕
+  setTimeout(() => {
+    if (typeof google !== 'undefined') {
+      renderGoogleBtn('googleBtnRegister');
+      renderGoogleBtn('googleBtnLogin');
+    }
+  }, 100);
 }
-function closeModal() {
-  document.getElementById('authModal').classList.remove('open');
-  document.body.style.overflow = '';
-}
+function closeModal() { document.getElementById('authModal').classList.remove('open'); document.body.style.overflow = ''; }
 function handleOverlayClick(e) { if(e.target === e.currentTarget) closeModal(); }
 function switchTab(tab) {
   const isReg = tab === 'register';
@@ -537,11 +484,9 @@ async function handleRegister() {
   const pw = document.getElementById('regPw').value;
   const errEl = document.getElementById('regError');
   const btn = document.getElementById('regBtn');
-
   errEl.classList.remove('show');
   if (!email || !pw) { errEl.textContent = '請填寫所有欄位'; errEl.classList.add('show'); return; }
   if (pw.length < 8) { errEl.textContent = '密碼至少需要 8 個字元'; errEl.classList.add('show'); return; }
-
   btn.disabled = true; btn.textContent = '建立中...';
   try {
     const res = await fetch(`${API}/auth/register`, {
@@ -553,10 +498,8 @@ async function handleRegister() {
     localStorage.setItem('sj_token', data.access_token);
     localStorage.setItem('sj_user', JSON.stringify(data.user));
     window.location.href = 'dashboard.html';
-  } catch(e) {
-    errEl.textContent = e.message; errEl.classList.add('show');
-    btn.disabled = false; btn.textContent = '建立帳號';
-  }
+  } catch(e) { errEl.textContent = e.message; errEl.classList.add('show'); }
+  btn.disabled = false; btn.textContent = '建立帳號';
 }
 
 async function handleLogin() {
@@ -564,7 +507,6 @@ async function handleLogin() {
   const pw = document.getElementById('loginPw').value;
   const errEl = document.getElementById('loginError');
   const btn = document.getElementById('loginBtn');
-
   errEl.classList.remove('show');
   btn.disabled = true; btn.textContent = '登入中...';
   try {
@@ -577,13 +519,10 @@ async function handleLogin() {
     localStorage.setItem('sj_token', data.access_token);
     localStorage.setItem('sj_user', JSON.stringify(data.user));
     window.location.href = 'dashboard.html';
-  } catch(e) {
-    errEl.textContent = e.message; errEl.classList.add('show');
-    btn.disabled = false; btn.textContent = '登入';
-  }
+  } catch(e) { errEl.textContent = e.message; errEl.classList.add('show'); }
+  btn.disabled = false; btn.textContent = '登入';
 }
 
-// Enter key
 ['regPw','loginPw'].forEach(id => {
   document.getElementById(id).addEventListener('keydown', e => {
     if (e.key === 'Enter') id === 'regPw' ? handleRegister() : handleLogin();
@@ -600,7 +539,7 @@ function toggleFaq(btn) {
 
 // Scroll fade
 const observer = new IntersectionObserver(entries => {
-  entries.forEach((entry, i) => {
+  entries.forEach(entry => {
     if (entry.isIntersecting) {
       const el = entry.target;
       const siblings = Array.from(el.parentElement.querySelectorAll('.fade-in'));
